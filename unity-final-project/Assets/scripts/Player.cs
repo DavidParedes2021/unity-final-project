@@ -1,11 +1,20 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-public class Player
+
+public abstract class Player
 {
-    private double _life;
-    private double _walkVelocity;
-    private double _jumpForce;
-    private List<Weapon> _weapons;
-    private List<Consumable> _consumibles;
-    
+    protected double Life { set; get; }
+    protected double Stamina { set; get; }
+    protected double WalkVelocity { set; get; }
+    protected double JumpForce { set; get; }
+    protected Weapon CurrentWeapon { set; get; }
+    protected List<Weapon> Weapons { set; get; }
+    protected List<Consumable> Consumables { set; get; }
+
+    public abstract void AddAmmunition(Ammunition otherAmmunition);
+
+    public abstract void AddFood(Consumable consumable);
+
+    public abstract void AddWater(Consumable consumable);
+
+    public abstract void AddWeapon(Weapon weapon);
 }
