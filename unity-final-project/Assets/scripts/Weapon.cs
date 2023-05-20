@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,11 +11,20 @@ public abstract class Weapon : PickableObject{
     public float fireRate;
     public float remainingFireRate;
     public Ammunition ammunition;
-    
+    private Coroutine _restoreFireRateCoroutine;
+
     private void Start()
     {
         ammunition = weaponPrefab.GetOrAddComponent<Ammunition>();
         DefineInitialState(ammunition);
+    }
+
+    public void FixedUpdate()
+    {
+        if (fireRate >= remainingFireRate)
+        {
+            remainingFireRate += Time.deltaTime;
+        }
     }
 
     protected abstract void DefineInitialState(Ammunition ammunitionToSetUp);
@@ -43,5 +53,24 @@ public abstract class Weapon : PickableObject{
         bullet.direction = direction.normalized;
         bullet.speed = bulletVelocity;
         bullet.damage = damage;
+    }
+    public void StartRestoreFireRate()
+    {
+        if (_restoreFireRateCoroutine != null)
+        {
+            StopCoroutine(_restoreFireRateCoroutine);
+        }
+        _restoreFireRateCoroutine = StartCoroutine(RestoreFireRateCoroutine());
+    }
+
+    private IEnumerator RestoreFireRateCoroutine()
+    {
+        while (remainingFireRate < fireRate)
+        {
+            remainingFireRate += Time.deltaTime;
+            yield return null;
+        }
+
+        remainingFireRate = fireRate;
     }
 }

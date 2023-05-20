@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 public class Zombie : Player
 {
+    
     public override void AddAmmunition(Ammunition otherAmmunition)
     {
         throw new System.NotImplementedException();

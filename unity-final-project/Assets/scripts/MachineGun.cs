@@ -14,13 +14,13 @@ public class MachineGun : Weapon
     }
     protected override void Trigger()
     {
-        if (remainingFireRate <= 0) {
+        if (remainingFireRate >= fireRate) {
             var resultUseAmmo = ammunition.Use(1);
             if (resultUseAmmo.Length != 0) {//Error
                 EventController.notifyEvent(EventController.NotificationType.ScreenMessage,resultUseAmmo);
                 return;
             } 
-            remainingFireRate = fireRate;
+            remainingFireRate = 0;
             //Instantiate bullet and fire it
             // Shoot bullets rapidly
             for (int i = 0; i < burstCount; i++) {

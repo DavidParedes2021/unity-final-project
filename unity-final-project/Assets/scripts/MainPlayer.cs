@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 public class MainPlayer : Player
 {
+    private AgentController _agentController;
     protected HashSet<RepairObject.BoatPart> BoatParts { set; get; }
     public override void AddAmmunition(Ammunition otherAmmunition)
     {

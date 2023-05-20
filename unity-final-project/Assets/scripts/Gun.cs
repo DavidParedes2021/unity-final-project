@@ -16,13 +16,13 @@ public class Gun : Weapon
 
     protected override void Trigger()
     {
-        if (remainingFireRate <= 0) {
+        if (remainingFireRate >= fireRate) {
             var resultUseAmmo = ammunition.Use(1);
             if (resultUseAmmo.Length != 0) {//Error
                 EventController.notifyEvent(EventController.NotificationType.ScreenMessage,resultUseAmmo);
                 return;
             } 
-            remainingFireRate = fireRate;
+            remainingFireRate = 0;
             FireBullet(EventController.getLookDirectionVector());
         }
     }
