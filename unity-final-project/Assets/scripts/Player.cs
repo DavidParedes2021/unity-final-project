@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
-public abstract class Player
+public abstract class Player : MonoBehaviour
 {
-    protected double Life { set; get; }
-    protected double Stamina { set; get; }
-    protected double WalkVelocity { set; get; }
-    protected double JumpForce { set; get; }
-    protected Weapon CurrentWeapon { set; get; }
+    public double Life { set; get; }
+    public double Stamina { set; get; }
+    public double maxStamina;
+    public double maxLife;
+    public double WalkVelocity { set; get; }
+    public double JumpForce { set; get; }
+    public Weapon CurrentWeapon { set; get; }
     protected List<Weapon> Weapons { set; get; }
     protected List<Consumable> Consumables { set; get; }
 
@@ -17,4 +20,14 @@ public abstract class Player
     public abstract void AddWater(Consumable consumable);
 
     public abstract void AddWeapon(Weapon weapon);
+
+    public double GetStaminaPercentage()
+    {
+        return Stamina / maxStamina;
+    }
+
+    public double GetLifePercentage()
+    {
+        return Life / maxLife;
+    }
 }

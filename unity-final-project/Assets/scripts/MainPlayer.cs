@@ -4,7 +4,7 @@ using UnityEngine;
 public class MainPlayer : Player
 {
     private AgentController _agentController;
-    protected HashSet<RepairObject.BoatPart> BoatParts { set; get; }
+    public HashSet<RepairObject> BoatParts { set; get; } = new HashSet<RepairObject>();
     public override void AddAmmunition(Ammunition otherAmmunition)
     {
 
@@ -44,7 +44,7 @@ public class MainPlayer : Player
         }
         Weapons.Add(weapon);
     }
-    public void AddBoatPart(RepairObject.BoatPart boatPart){
+    public void AddBoatPart(RepairObject boatPart){
         if (!BoatParts.Contains(boatPart))
         {
             BoatParts.Add(boatPart);

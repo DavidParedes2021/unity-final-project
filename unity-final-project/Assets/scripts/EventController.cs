@@ -8,12 +8,13 @@ public class EventController : MonoBehaviour
         {
                 ScreenMessage
         }
-        private UiController _uiController;
-        private List<Zombie> _zombies;
-        private MainPlayer _mainPlayer;
-        private List<Consumable> _consumibles;
-        private List<Weapon> _weapons;
-        public ResourcesManager resourcesManager;
+
+        public UIController UIController;
+        public List<Zombie> Zombies { get; set; }
+        public MainPlayer MainPlayer;
+        public List<Consumable> Consumables { get; set; }
+        public List<Weapon> Weapons { get; set; }
+        public ResourcesManager ResourcesManager { get; set; }
         void Start()
         {
                 

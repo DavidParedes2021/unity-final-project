@@ -78,4 +78,9 @@ public class Ammunition : PickableObject
     {
         Reload(_ammoCount);
     }
+
+    public string getStringR()
+    {
+        return _currentBulletsInCannon + "/" + _ammoCount;
+    }
 }

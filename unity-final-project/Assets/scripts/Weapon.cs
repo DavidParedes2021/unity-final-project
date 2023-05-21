@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Weapon : PickableObject{
     public GameObject weaponPrefab;
     public int bulletVelocity = 10;
+    public Image weaponImage;
     public int damage;
     public float fireRate;
     public float remainingFireRate;
@@ -15,6 +17,10 @@ public abstract class Weapon : PickableObject{
 
     private void Start()
     {
+        if (weaponImage == null)
+        {
+            Debug.LogWarning("No weapon image setter for"+this);
+        }
         ammunition = weaponPrefab.GetOrAddComponent<Ammunition>();
         DefineInitialState(ammunition);
     }
@@ -44,7 +50,7 @@ public abstract class Weapon : PickableObject{
     public void FireBullet(Vector3 direction)
     {
         // Instantiate a new bullet from the bulletPrefab
-        GameObject bulletObject = Instantiate(EventController.resourcesManager.bulletPrefab, transform.position, Quaternion.identity);
+        GameObject bulletObject = Instantiate(EventController.ResourcesManager.bulletPrefab, transform.position, Quaternion.identity);
 
         // Get the Bullet component from the instantiated bullet object
         Bullet bullet = bulletObject.GetOrAddComponent<Bullet>();
