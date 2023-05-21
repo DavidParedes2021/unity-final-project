@@ -7,7 +7,6 @@ public class MachineGun : Weapon
     public int burstCount = 10;
     protected override void DefineInitialState(Ammunition ammunitionToSetUp)
     {
-        ammunitionToSetUp.AmmoType = Ammunition.AmmunitionType.MachineGun;
         ammunitionToSetUp.AddAmmo(initialAmmoCount);
         ammunitionToSetUp.Reload();
         remainingFireRate = fireRate;

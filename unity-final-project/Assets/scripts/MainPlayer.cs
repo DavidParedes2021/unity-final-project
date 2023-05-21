@@ -1,29 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 public class MainPlayer : Player
 {
-    private AgentController _agentController;
-    public HashSet<RepairObject> BoatParts { set; get; } = new HashSet<RepairObject>();
-    public override void AddAmmunition(Ammunition otherAmmunition)
-    {
+    public HashSet<RepairObject> BoatParts = new();
 
-        for (var i = 0; i < Weapons.Count; i++)
+    protected override void Awake()
+    {
+        base.Awake();
+        CollidableObject.AttachToScript(this.gameObject,nameof(MainPlayer));
+        
+        foreach (var boatPart in Enum.GetValues(typeof(RepairObject.BoatPart)).Cast<RepairObject.BoatPart>())
         {
-            if (Weapons[i].MergeAmmunition(otherAmmunition))
-            {
-                return;
-            }
+            BoatParts.Add(new GameObject(RepairObject.getNameOf(boatPart)).AddComponent<RepairObject>().SetBoatPart(boatPart));
         }
+
+        maxLife = 100;
+        Life = 100;
+        
+        maxStamina = 100;
+        Stamina = 100;
     }
 
-    public override void AddFood(Consumable consumable)
+    public override void AddAmmunition(Ammunition otherAmmunition)
+    {
+        
+        if (CurrentWeapon!=null)
+        {
+            CurrentWeapon.MergeAmmunition(otherAmmunition);
+        }
+    }
+    protected override void AddFood(Consumable consumable)
     {
         Life += consumable.BenefitAmount;
         consumable.BenefitAmount = 0;
     }
 
-    public override void AddWater(Consumable consumable)
+    protected override void AddWater(Consumable consumable)
     {
         Stamina += consumable.BenefitAmount;
         consumable.BenefitAmount = 0;

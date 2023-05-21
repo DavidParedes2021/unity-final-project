@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RepairObject : PickableObject
 {
-    public GameObject RepairObjectPrefab { get; set;}
-
+    
     public enum BoatPart
     {
         Engine,
@@ -18,6 +18,7 @@ public class RepairObject : PickableObject
     public BoatPart boatPart;
     private void Awake()
     {
+        CollidableObject.AttachToScript(this.gameObject,nameof(RepairObject));
         if (boatPart == BoatPart.Engine || boatPart==BoatPart.Propeller)
         {
             amountNeeded = 1;
@@ -32,6 +33,11 @@ public class RepairObject : PickableObject
         }
     }
 
+    public RepairObject SetBoatPart(BoatPart newBoatPart)
+    {
+        this.boatPart = newBoatPart;
+        return this;
+    }
     public override void PickUp(Player player)
     {
         if (player is not MainPlayer) {
@@ -46,14 +52,21 @@ public class RepairObject : PickableObject
         // Disable or remove the repair object from the scene
         gameObject.SetActive(false);
     }
+    public static bool HasAllBoatParts(List<RepairObject> repairObjects)
+    {
+        // Get all values of the BoatPart enum
+        var boatPartValues = Enum.GetValues(typeof(BoatPart)).Cast<BoatPart>();
 
+        // Check if RepairObjects contains at least one element of each BoatPart type
+        return boatPartValues.All(boatPart => repairObjects.Any(obj => obj.boatPart == boatPart));
+    }
     public override bool Equals(object other)
     {
         return !ReferenceEquals(null, other) && (ReferenceEquals(this, other) ||
                                                  other.GetType() == this.GetType() && Equals((RepairObject)other));
     }
 
-    protected bool Equals(RepairObject other)
+    private bool Equals(RepairObject other)
     {
         return base.Equals(other) && boatPart == other.boatPart;
     }
@@ -61,5 +74,28 @@ public class RepairObject : PickableObject
     public override int GetHashCode()
     {
         return HashCode.Combine(base.GetHashCode(), (int)boatPart);
+    }
+
+    public static void RequireRepairObject(GameObject prefab)
+    {
+        if (prefab.GetComponent<RepairObject>()==null)
+        {
+            throw new Exception("There is not RepairObject script attached and is required!");
+        }
+    }
+
+    public static string getNameOf(BoatPart boatPart1)
+    {
+        switch (boatPart1)
+        {
+            case BoatPart.Engine:
+                return "Engine";
+            case  BoatPart.Gasoline:
+                return "Gasoline";
+            case BoatPart.Propeller:
+                return "Propeller";
+            default:
+                throw new Exception("Unknown behaviour for " + boatPart1);
+        }
     }
 }

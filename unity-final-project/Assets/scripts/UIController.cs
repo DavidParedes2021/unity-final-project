@@ -18,8 +18,11 @@ public class UIController : MonoBehaviour
     public Image compassBackgroundImage;
     public Image compassImage;
     public GameObject minimap;
-
+    public TextMeshProUGUI messageText;
     public EventController eventController;
+
+    private MainPlayer _mainPlayer;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -28,19 +31,29 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
-        
+        _mainPlayer = eventController.MainPlayer;
     }
 
     // Update is called once per frame
     void Update()
     {
-        MainPlayer mainPlayer = eventController.MainPlayer;
+        UpdateCoordinates(_mainPlayer);
+        UpdateBoatState(_mainPlayer);
+        UpdateCurrentWeapon(_mainPlayer);
+        UpdateHealthSlider(_mainPlayer);
+        UpdateStaminaSlider(_mainPlayer);
+        UpdateInventorySlots(_mainPlayer);
+    }
 
-        UpdateCoordinates(mainPlayer);
-        UpdateBoatState(mainPlayer);
-        UpdateCurrentWeapon(mainPlayer);
-        UpdateHealthSlider(mainPlayer);
-        UpdateStaminaSlider(mainPlayer);
+    private void UpdateInventorySlots(MainPlayer mainPlayer)
+    {
+        for (var i = 0; i < mainPlayer.Consumables.Count; i++)
+        {
+            if (inventorySlots[i].overrideSprite != mainPlayer.Consumables[i].consumableImage)
+            {
+                inventorySlots[i].overrideSprite = mainPlayer.Consumables[i].consumableImage;
+            }
+        }
     }
 
     private void UpdateCoordinates(MainPlayer mainPlayer)
@@ -59,7 +72,7 @@ public class UIController : MonoBehaviour
         {
             int currentAmount = boatPart.currentAmount;
             int amountNeeded = boatPart.amountNeeded;
-            boatStateBuilder.AppendLine($"{boatPart}: {currentAmount}/{amountNeeded}");
+            boatStateBuilder.AppendLine($"{RepairObject.getNameOf(boatPart.boatPart)}: {currentAmount}/{amountNeeded}");
         }
 
         if (!boatStateBuilder.ToString().Equals(boatStateText.GetParsedText()))
@@ -70,11 +83,20 @@ public class UIController : MonoBehaviour
 
     private void UpdateCurrentWeapon(MainPlayer mainPlayer)
     {
-        Image currentWeaponI = mainPlayer.CurrentWeapon.weaponImage;
-        if (currentWeaponImage.sprite != currentWeaponI.sprite)
+        if (mainPlayer.CurrentWeapon == null)
         {
-            currentWeaponImage.sprite = currentWeaponI.sprite;
+            if (currentWeaponImage.overrideSprite != null)
+            {
+                currentWeaponImage.overrideSprite = null;
+            }
+            return;
         }
+        Sprite currentWeaponSprite = mainPlayer.CurrentWeapon.weaponImage;
+        if (currentWeaponImage.overrideSprite != currentWeaponSprite)
+        {
+            currentWeaponImage.overrideSprite = currentWeaponSprite;
+        }
+
         string ammoS = mainPlayer.CurrentWeapon.ammunition.getStringR();
         if (!ammunitionCountText.GetParsedText().Equals(ammoS))
         {
@@ -112,5 +134,33 @@ public class UIController : MonoBehaviour
         {
             staminaSlider.value = (float)mainPlayer.Life;
         }
+    }
+
+    public void WriteMessage(string message, float displayTime)
+    {
+        StartCoroutine(ShowMessage(message, displayTime));
+    }
+
+    private IEnumerator ShowMessage(string message, float displayTime)
+    {
+        messageText.text = message;
+        messageText.enabled = true;
+
+        yield return new WaitForSeconds(displayTime * 0.5f); // Wait for 90% of the display time
+
+        float blinkInterval = (float)(displayTime*0.5/10f); // Time interval for blinking (in seconds)
+        float blinkDuration = displayTime * 0.5f; // Duration for blinking (10% of the display time)
+
+        float blinkTime = 0f;
+        while (blinkTime < blinkDuration)
+        {
+            messageText.enabled = !messageText.enabled; // Toggle the text visibility
+
+            yield return new WaitForSeconds(blinkInterval);
+
+            blinkTime += blinkInterval;
+        }
+
+        messageText.enabled = false; // Ensure the text is not visible at the end of blinking
     }
 }

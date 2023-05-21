@@ -6,4 +6,5 @@ public class U
     {
         return obj.GetComponent<T>() == null ? obj.AddComponent<T>() : obj.GetComponent<T>();
     }
+
 }

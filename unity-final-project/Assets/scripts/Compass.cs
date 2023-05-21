@@ -5,6 +5,8 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 public class Compass : MonoBehaviour
 {
 	public GameObject targetPrefab;
@@ -26,19 +28,28 @@ public class Compass : MonoBehaviour
 		gameObject.SetActive(true);
 		_mainPlayer = this.eventController.MainPlayer;
 		playerTransform = this.eventController.MainPlayer.transform;
-		AddRepairObjectTargets(_mainPlayer.BoatParts);
 	}
 
-	private void AddRepairObjectTargets(HashSet<RepairObject> mainPlayerBoatParts)
+	private void Start()
+	{
+		List<RepairObject> repairObjects = eventController.RepairObjects;
+		int sampleSize = (int)(repairObjects.Count * 0.1)+1;
+
+		List<RepairObject> randomSampleRepairObjects = repairObjects.OrderBy(item => Random.Range(0, repairObjects.Count)).Take(sampleSize).ToList();
+
+		AddRepairObjectTargets(randomSampleRepairObjects);
+	}
+
+	private void AddRepairObjectTargets(List<RepairObject> mainPlayerBoatParts)
 	{
 		List<int> ids = new List<int>();
-		List<GameObject> targetGO = new List<GameObject>();
+		List<GameObject> targetGo = new List<GameObject>();
 		foreach (var o in mainPlayerBoatParts)
 		{
-			targetGO.Add(o.gameObject);
+			targetGo.Add(o.gameObject);
 			ids.Add(1);
 		}
-		addTargets(targetGO, ids);
+		addTargets(targetGo, ids);
 	}
 
 	public void addTargets(List<GameObject> targetGameObjects, List<int> ids)

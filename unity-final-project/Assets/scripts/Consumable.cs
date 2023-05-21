@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 public class Consumable : PickableObject
 {
     public GameObject ConsumablePrefab { set; get; }
@@ -8,35 +9,18 @@ public class Consumable : PickableObject
         Food,
         Water
     }
-
     public ConsumableType consumableType;
+    public Sprite consumableImage;
+
+    private void Awake()
+    {
+        CollidableObject.AttachToScript(this.gameObject,nameof(Consumable));
+    }
 
     public override void PickUp(Player player)
     {
-        switch (consumableType)
-        {
-            case ConsumableType.Food:
-                ConsumeFood(player);
-                break;
-            case ConsumableType.Water:
-                ConsumeWater(player);
-                break;
-            default:
-                Debug.LogWarning("Invalid consumable type!");
-                break;
-        }
-
+        player.AddConsumable(this);
         // Disable or remove the consumable object from the scene
         gameObject.SetActive(false);
-    }
-
-    private void ConsumeFood(Player player)
-    {
-        player.AddFood(this);
-    }
-
-    private void ConsumeWater(Player player)
-    {
-        player.AddWater(this);
     }
 }

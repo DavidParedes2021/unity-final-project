@@ -11,8 +11,6 @@ public class ShotGun : Weapon
 
     protected override void DefineInitialState(Ammunition ammunitionToSetUp)
     {
-        
-        ammunitionToSetUp.AmmoType = Ammunition.AmmunitionType.Pistol;
         ammunitionToSetUp.AddAmmo(initialAmmoCount);
         ammunitionToSetUp.Reload();
         remainingFireRate = fireRate;

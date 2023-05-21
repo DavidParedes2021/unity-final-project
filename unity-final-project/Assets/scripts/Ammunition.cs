@@ -1,30 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Ammunition : PickableObject
 {
     // Define ammunition types for different weapons
-    public enum AmmunitionType
-    {
-        Pistol,
-        Shotgun,
-        MachineGun
-    }
-
-    public GameObject AmmunitionPrefab { set; get; }
-    public AmmunitionType AmmoType { set; get; }
     
     private int _ammoCount;
     
     public int MaxBulletsInCannon { get; set; }
 
-    private int _currentBulletsInCannon = 0; 
+    private int _currentBulletsInCannon = 0;
 
-    public Ammunition(AmmunitionType ammoType, int ammoCount)
+    private void Awake()
     {
-        this.AmmoType = ammoType;
-        this._ammoCount = ammoCount;
+        CollidableObject.AttachToScript(this.gameObject,nameof(MainPlayer));
+        _ammoCount = Random.Range(10, 50);
     }
 
     public override void PickUp(Player player)
@@ -35,16 +28,9 @@ public class Ammunition : PickableObject
 
     public bool MergeAmmunition(Ammunition otherAmmo)
     {
-        if (this.AmmoType == otherAmmo.AmmoType)
-        {
-            this._ammoCount += otherAmmo._ammoCount;
-            otherAmmo._ammoCount = 0;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        this._ammoCount += otherAmmo._ammoCount;
+        otherAmmo._ammoCount = 0;
+        return true;
     }
     public string Use(int amount)
     {
@@ -81,6 +67,6 @@ public class Ammunition : PickableObject
 
     public string getStringR()
     {
-        return _currentBulletsInCannon + "/" + _ammoCount;
+        return _currentBulletsInCannon +"/"+MaxBulletsInCannon+ ":" + _ammoCount;
     }
 }

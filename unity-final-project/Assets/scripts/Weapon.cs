@@ -8,12 +8,17 @@ using UnityEngine.UI;
 public abstract class Weapon : PickableObject{
     public GameObject weaponPrefab;
     public int bulletVelocity = 10;
-    public Image weaponImage;
+    public Sprite weaponImage;
     public int damage;
     public float fireRate;
     public float remainingFireRate;
     public Ammunition ammunition;
     private Coroutine _restoreFireRateCoroutine;
+
+    private void Awake()
+    {
+        CollidableObject.AttachToScript(this.gameObject,nameof(Weapon));
+    }
 
     private void Start()
     {
@@ -40,11 +45,12 @@ public abstract class Weapon : PickableObject{
     public override void PickUp(Player player)
     {
         player.AddWeapon(this);
+        gameObject.SetActive(false);
     }
 
-    public bool MergeAmmunition(Ammunition otherAmmunition)
+    public void MergeAmmunition(Ammunition otherAmmunition)
     {
-        return otherAmmunition.MergeAmmunition(this.ammunition);
+        ammunition.MergeAmmunition(otherAmmunition);
     }
     // Fire bullet method
     public void FireBullet(Vector3 direction)
@@ -78,5 +84,25 @@ public abstract class Weapon : PickableObject{
         }
 
         remainingFireRate = fireRate;
+    }
+
+    public static Weapon RequireWeapon(GameObject weaponGo)
+    {
+        MachineGun machineGun = weaponGo.GetComponent<MachineGun>();
+        if(machineGun!=null)
+        {
+            return machineGun;
+        }
+        ShotGun shotGun = weaponGo.GetComponent<ShotGun>();
+        if(shotGun!=null)
+        {
+            return shotGun;
+        }
+        Gun gun = weaponGo.GetComponent<Gun>();
+        if (gun != null)
+        {
+            return gun;
+        }
+        throw new Exception("The Game Object has not attached a weapon script!");
     }
 }
