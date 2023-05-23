@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ResourcesManager:MonoBehaviour
@@ -19,11 +20,14 @@ public class ResourcesManager:MonoBehaviour
     public GameObject propellerBoatPartPrefab;
     public GameObject gasolineBoatPartPrefab;
 
+    [FormerlySerializedAs("food")] public GameObject foodPrefab;
+    [FormerlySerializedAs("water")] public GameObject waterPrefab;
+    private List<GameObject> consumablesPrefabs;
 
     public GameObject chooseRandomWeapon()
     {
         if (_weapons == null || _weapons.Count==0) {
-            _weapons=new (){machineGunPrefab,gunPrefab,shotgunPrefab};
+            _weapons=new List<GameObject> {machineGunPrefab,gunPrefab,shotgunPrefab};
         }
         return _weapons[Random.Range(0, _weapons.Count)];
     }
@@ -47,5 +51,13 @@ public class ResourcesManager:MonoBehaviour
         }
 
         return prefab;
+    }
+
+    public GameObject chooseRandomConsumable()
+    {
+        if (consumablesPrefabs == null || consumablesPrefabs.Count==0) {
+            consumablesPrefabs=new List<GameObject> {foodPrefab,waterPrefab};
+        }
+        return consumablesPrefabs[Random.Range(0, consumablesPrefabs.Count)];
     }
 }

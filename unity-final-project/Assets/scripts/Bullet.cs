@@ -32,6 +32,11 @@ public class Bullet : MonoBehaviour
     }
     public void CollideWithNothing()
     {
-        Destroy(this);
+        Invoke(nameof(DestroyGo),5f);
+    }
+
+    private void DestroyGo()
+    {
+        Destroy(gameObject);
     }
 }

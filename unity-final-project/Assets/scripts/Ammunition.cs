@@ -23,7 +23,7 @@ public class Ammunition : PickableObject
     public override void PickUp(Player player)
     {
         player.AddAmmunition(this);
-        gameObject.SetActive(false);
+        EventController.DestroyItem(this);
     }
 
     public bool MergeAmmunition(Ammunition otherAmmo)

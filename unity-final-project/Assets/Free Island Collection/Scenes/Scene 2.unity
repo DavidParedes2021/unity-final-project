@@ -106,23 +106,23 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.5
+    agentRadius: 1
     agentHeight: 2
-    agentSlope: 45
-    agentClimb: 0.4
-    ledgeDropHeight: 0
-    maxJumpAcrossDistance: 0
-    minRegionArea: 2
-    manualCellSize: 0
-    cellSize: 0.16666667
+    agentSlope: 60
+    agentClimb: 1.2
+    ledgeDropHeight: 6
+    maxJumpAcrossDistance: 4
+    minRegionArea: 1
+    manualCellSize: 1
+    cellSize: 0.125
     manualTileSize: 0
     tileSize: 256
-    accuratePlacement: 0
+    accuratePlacement: 1
     maxJobWorkers: 0
     preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: e557436a9c5d6cc468fd87d09c1c33bb, type: 2}
 --- !u!1 &7599790
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,7 +1257,7 @@ MonoBehaviour:
   RepairObjects: []
   Ammunitions: []
   ResourcesManager: {fileID: 1094073311}
-  maxZombies: 100
+  maxZombies: 170
   spawnZombieRateInSeconds: 1
 --- !u!114 &1094073311
 MonoBehaviour:
@@ -1282,6 +1282,8 @@ MonoBehaviour:
   engineBoatPartPrefab: {fileID: 2646327208407885898, guid: 09e11fad949e0364f99e06e48f6298f8, type: 3}
   propellerBoatPartPrefab: {fileID: 902466320148218752, guid: 5bb8e2921a2e67149a81beb984c90d7e, type: 3}
   gasolineBoatPartPrefab: {fileID: 1986381244932964377, guid: 313739f92b2063b42b79ff12d8eca402, type: 3}
+  foodPrefab: {fileID: 7777786775798006959, guid: 9571f2e16e5315343aa2ca99d605617c, type: 3}
+  waterPrefab: {fileID: 6489474069645919701, guid: 8109ce51f9565ed489736999413b0a2a, type: 3}
 --- !u!1 &1097072138
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,12 +1402,13 @@ GameObject:
   - component: {fileID: 1108940592}
   - component: {fileID: 1108940591}
   - component: {fileID: 1108940590}
+  - component: {fileID: 1108940593}
   m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 40
   m_IsActive: 1
 --- !u!154 &1108940590
 TerrainCollider:
@@ -1467,6 +1470,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1108940593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1108940589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: f7d5a0dbe156c994d996c1a2e3a392bc, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1111914877
 GameObject:
   m_ObjectHideFlags: 0

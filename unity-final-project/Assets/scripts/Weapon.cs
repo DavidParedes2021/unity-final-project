@@ -46,8 +46,10 @@ public abstract class Weapon : PickableObject{
 
     public override void PickUp(Player player)
     {
-        player.AddWeapon(this);
-        gameObject.SetActive(false);
+        if (!player.AddWeapon(this))
+        {
+            EventController.DestroyItem(this);
+        }
     }
 
     public void MergeAmmunition(Ammunition otherAmmunition)

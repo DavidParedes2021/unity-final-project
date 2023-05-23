@@ -1,4 +1,5 @@
-﻿using Unity.VisualScripting;
+﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AgentController : MonoBehaviour
@@ -18,6 +19,7 @@ public class AgentController : MonoBehaviour
     private float minRotation = -65.0f;
     private float maxRotation = 60.0f;
     private float h_mouse, v_mouse;
+    private bool isRunEnabled;
 
     private void Awake()
     {
@@ -36,6 +38,16 @@ public class AgentController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    private void Start()
+    {
+        Player player = GetComponent<Player>();
+        if (player != null && Math.Abs(player.WalkVelocity - walkSpeed) > 0.1)
+        {
+            Debug.LogWarning("The Walk velocity in AgentController and in the Player differ, overriding it with "+walkSpeed);
+            player.WalkVelocity = walkSpeed;
+        }
+    }
+
     private void Update()
     {
         // Handle movement input
@@ -49,7 +61,11 @@ public class AgentController : MonoBehaviour
         movement.Normalize();
 
         // Apply movement speed based on input and player state
-        float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        var isRunning = Input.GetKey(KeyCode.LeftShift) && isRunEnabled;
+        if (isRunning) {
+            OnRun?.Invoke(Time.deltaTime);
+        }
+        float speed = isRunning ? runSpeed : walkSpeed;
         movement *= speed;
 
         // Handle jump input
@@ -85,6 +101,9 @@ public class AgentController : MonoBehaviour
         // Invoke the OnLook event
         OnLook?.Invoke(new Vector2(mouseX, mouseY));
     }
+    
+    public delegate void RunDelegate(float deltaTime);
+    public event RunDelegate OnRun;
     public delegate void MoveDelegate(Vector3 movement);
     public event MoveDelegate OnMove;
 
@@ -94,5 +113,15 @@ public class AgentController : MonoBehaviour
     public Camera GetCamera()
     {
         return playerCamera;
+    }
+
+    public void DisableRun()
+    {
+        isRunEnabled = false;
+    }
+
+    public void EnableRun()
+    {
+        isRunEnabled = true;
     }
 }

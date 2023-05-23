@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -11,8 +12,10 @@ public class MainPlayer : Player
     public HashSet<RepairObject> BoatParts = new();
 
     private AgentController _agentController;
+    
+    private Coroutine _statisticsRestoreCoroutine;
+    private bool _isShooting;
 
-    private bool _isShooting=false;
     protected override void Awake()
     {
         base.Awake();
@@ -27,10 +30,57 @@ public class MainPlayer : Player
         
         maxLife = 100;
         Life = 100;
+        lifeRecoverRatePerSecond = (float)(maxLife * 0.03);//Recover 3% each second
         
         maxStamina = 100;
         Stamina = 100;
+        staminaRecoverRatePerSecond = (float)(maxLife * 0.05);//Recover 5% each second
+        staminaLossRatePerSecond = staminaRecoverRatePerSecond * 4;//Stamina reduced 15% each second;
+
+        _agentController.OnRun += ReduceStamina;
     }
+
+    private void Start()
+    {
+        _statisticsRestoreCoroutine = StartCoroutine(RestoreStatisticsCoroutine());
+    }
+
+    
+    private void OnDestroy()
+    {
+        // Stop the stamina restore coroutine when the player is destroyed
+        if (_statisticsRestoreCoroutine != null)
+        {
+            StopCoroutine(_statisticsRestoreCoroutine);
+        }
+    }
+    private IEnumerator RestoreStatisticsCoroutine()
+    {
+        while (true)
+        {
+            // Restore stamina over time
+            Stamina += staminaRecoverRatePerSecond * 0.1;
+            Life += lifeRecoverRatePerSecond * 0.1;
+
+            // Clamp the stamina value to the maximum
+            Stamina = Mathf.Clamp((float)Stamina, float.MinValue,(float) maxStamina);
+            // Clamp the stamina value to the maximum
+            Life = Mathf.Clamp((float)Life, -10,(float) maxLife);
+
+            // Wait for a short duration before restoring stamina again
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+    private void ReduceStamina(float deltaTime)
+    {
+        Stamina -= staminaLossRatePerSecond*deltaTime;
+        Stamina = Mathf.Clamp((float)Stamina, -staminaLossRatePerSecond,(float) maxStamina);
+        if (Stamina <= 0)
+        {
+            Stamina = -3*staminaLossRatePerSecond;
+        }
+    }
+
 
     public override void attachToEventControlelr(EventController controller)
     {
@@ -43,6 +93,14 @@ public class MainPlayer : Player
 
     private void Update()
     {
+        if (Stamina <= 0)
+        {
+            _agentController.DisableRun();
+        }
+        else
+        {
+            _agentController.EnableRun();
+        }
         if (Input.GetKeyUp(KeyCode.R))
         {
             if (CurrentWeapon != null)
@@ -51,6 +109,12 @@ public class MainPlayer : Player
             }
         }
 
+        for (int i = 0; i < MaxConsumablesAmount; i++) {
+            if (Input.GetKeyUp(KeyCode.Alpha0 + i))
+            {
+                UseConsumable(i-1);
+            }
+        }
         // Handle weapon trigger input (Mouse Left Click)
         //Until the button is released, trigger 
         if (Input.GetMouseButtonDown(0))
@@ -84,45 +148,17 @@ public class MainPlayer : Player
         return _agentController.GetCamera().transform.forward;
     }
 
-    public override void AddAmmunition(Ammunition otherAmmunition)
-    {
-        
-        if (CurrentWeapon!=null)
+    public bool AddBoatPart(RepairObject boatPart){
+        foreach (var repairObject in BoatParts)
         {
-            CurrentWeapon.MergeAmmunition(otherAmmunition);
-        }
-    }
-    protected override void AddFood(Consumable consumable)
-    {
-        Life += consumable.BenefitAmount;
-        consumable.BenefitAmount = 0;
-    }
-
-    protected override void AddWater(Consumable consumable)
-    {
-        Stamina += consumable.BenefitAmount;
-        consumable.BenefitAmount = 0;
-    }
-
-    public override void AddWeapon(Weapon weapon)
-    {
-        for (var i = 0; i < Weapons.Count; i++)
-        {
-            if (Weapons[i].GetType() == weapon.GetType())
+            if (repairObject.boatPart == boatPart.boatPart)
             {
-                return;
+                repairObject.AddBoatPart(1);
+                return true;
             }
         }
-        if (CurrentWeapon == null)
-        {
-            CurrentWeapon = weapon;
-        }
-        Weapons.Add(weapon);
-    }
-    public void AddBoatPart(RepairObject boatPart){
-        if (!BoatParts.Contains(boatPart))
-        {
-            BoatParts.Add(boatPart);
-        }
+
+        BoatParts.Add(boatPart);
+        return true;
     }
 }

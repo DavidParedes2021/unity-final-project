@@ -33,7 +33,7 @@ public class EventController : MonoBehaviour
         
         public ResourcesManager ResourcesManager;
 
-        public int maxZombies=160;
+        public int maxZombies=100;
         public float spawnZombieRateInSeconds=1f;
 
         private void Awake()
@@ -59,6 +59,11 @@ public class EventController : MonoBehaviour
                 {
                         SpawnWeapon();
                 }
+                
+                for (int i = 0; i < 50; i++)
+                {
+                        SpawnConsumables();
+                }
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -74,6 +79,23 @@ public class EventController : MonoBehaviour
                 {
                         SpawnRepairObject(RepairObject.BoatPart.Engine);
                 }
+        }
+
+        private void SpawnConsumables()
+        {
+                GameObject prefab = ResourcesManager.chooseRandomConsumable();
+                Consumable.RequireConsumable(prefab);
+                
+                // Get a random position on the terrain
+                Vector3 randomPosition = GetRandomTerrainPosition(ResourcesManager.currentTerrain,MainPlayer.transform.position);
+
+                // Spawn the repair object at the random position
+                GameObject instConsumable = Instantiate(prefab, randomPosition, Quaternion.identity);
+                Consumable consumable = instConsumable.GetComponent<Consumable>();
+                
+                consumable.AttachToEventController(this);
+
+                Consumables.Add(consumable);
         }
 
         private void SpawnRepairObject(RepairObject.BoatPart boatPart)
@@ -96,30 +118,12 @@ public class EventController : MonoBehaviour
 
         private void InstantiateListHolders()
         {
-                if (Zombies == null)
-                {
-                        Zombies = new List<Zombie>();
-                }
-
-                if (Ammunitions == null)
-                {
-                        Ammunitions = new List<Ammunition>();
-                }
-
-                if (Weapons == null)
-                {
-                        Weapons = new List<Weapon>();
-                }
-
-                if (Consumables == null)
-                {
-                        Consumables = new List<Consumable>();
-                }
-
-                if (RepairObjects != null)
-                {
-                        RepairObjects = new List<RepairObject>();
-                }
+                Zombies ??= new List<Zombie>();
+                Ammunitions ??= new List<Ammunition>();
+                Weapons ??= new List<Weapon>();
+                Consumables ??= new List<Consumable>();
+                RepairObjects ??= new List<RepairObject>();
+                Consumables ??= new List<Consumable>();
         }
 
 
@@ -174,9 +178,16 @@ public class EventController : MonoBehaviour
                 // Spawn the zombie at the random position
                 GameObject zombieObj = Instantiate(ResourcesManager.zombiePrefab, randomPosition, Quaternion.identity);
                 Zombie zombie = U.GetOrAddComponent<Zombie>(zombieObj);
+                zombie.attachToEventControlelr(this);
                 Zombies.Add(zombie);
         }
 
+        public Vector3 GetRandomTerrainPosition(Vector3 centralPosition = default,
+                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f)
+        {
+                return GetRandomTerrainPosition(ResourcesManager.currentTerrain,centralPosition, lowerLimitDistance, upperLimitDistance,
+                        minElevation);
+        }
 
         private static Vector3 GetRandomTerrainPosition(Terrain currentTerrain, Vector3 centralPosition = default,
                 float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f)
@@ -211,5 +222,47 @@ public class EventController : MonoBehaviour
                 Vector3 randomPosition = new Vector3(randomX, terrainHeight+7, randomZ);
 
                 return randomPosition;
+        }
+        
+
+        public void DestroyItem(Ammunition ammunition)
+        {
+                Ammunitions.Remove(ammunition);
+                Destroy(ammunition.gameObject);
+        }
+        public void DestroyItem(RepairObject repairObject)
+        {
+                RepairObjects.Remove(repairObject);
+                Destroy(repairObject.gameObject);
+        }
+        public void DestroyItem(Weapon weapon)
+        {
+                Weapons.Remove(weapon);
+                Destroy(weapon.gameObject);
+        }
+        public void DestroyItem(Consumable consumable)
+        {
+                Consumables.Remove(consumable);
+                Destroy(consumable.gameObject);
+        }
+        public void DestroyItem(Player player)
+        {
+                switch (player)
+                {
+                        case MainPlayer mainPlayer:
+                                EndGame();
+                                break;
+                        case Zombie zombie:
+                                Zombies.Remove(zombie);
+                                Destroy(zombie.gameObject);
+                                break;
+                        default:
+                                throw new Exception("Unknown behaviour for:" + nameof(player));
+                }
+        }
+
+        private void EndGame()
+        {
+                throw new NotImplementedException();
         }
 }

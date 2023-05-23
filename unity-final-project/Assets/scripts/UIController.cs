@@ -22,6 +22,7 @@ public class UIController : MonoBehaviour
     public EventController eventController;
 
     private MainPlayer _mainPlayer;
+    private int maxInventorySlots = 4;
 
     // Start is called before the first frame update
     private void Awake()
@@ -47,12 +48,21 @@ public class UIController : MonoBehaviour
 
     private void UpdateInventorySlots(MainPlayer mainPlayer)
     {
-        for (var i = 0; i < mainPlayer.Consumables.Count; i++)
+        List<Consumable> mainPlayerConsumables = mainPlayer.Consumables;
+        for (var i = 0; i < maxInventorySlots; i++)
         {
-            if (inventorySlots[i].overrideSprite != mainPlayer.Consumables[i].consumableImage)
+            if (i < mainPlayerConsumables.Count)
             {
-                inventorySlots[i].overrideSprite = mainPlayer.Consumables[i].consumableImage;
+                if (inventorySlots[i].overrideSprite != mainPlayerConsumables[i].consumableImage)
+                {
+                    inventorySlots[i].overrideSprite = mainPlayerConsumables[i].consumableImage;
+                }
             }
+            else
+            {
+                inventorySlots[i].overrideSprite = null;
+            }
+           
         }
     }
 
@@ -126,13 +136,13 @@ public class UIController : MonoBehaviour
         {
             staminaSlider.minValue = 0;
         }
-        if (Math.Abs(staminaSlider.maxValue - mainPlayer.maxLife) > 0.1)
+        if (Math.Abs(staminaSlider.maxValue - mainPlayer.maxStamina) > 0.1)
         {
             staminaSlider.maxValue = (float)mainPlayer.maxLife;
         }
-        if (Math.Abs(staminaSlider.value - mainPlayer.Life) > 0.1)
+        if (Math.Abs(staminaSlider.value - mainPlayer.Stamina) > 0.1)
         {
-            staminaSlider.value = (float)mainPlayer.Life;
+            staminaSlider.value = (float)mainPlayer.Stamina;
         }
     }
 

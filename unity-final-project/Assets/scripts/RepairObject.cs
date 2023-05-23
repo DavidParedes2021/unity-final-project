@@ -40,17 +40,21 @@ public class RepairObject : PickableObject
     }
     public override void PickUp(Player player)
     {
-        if (player is not MainPlayer) {
+        if (player is not MainPlayer mainPlayer) {
             return;
         }
 
-        MainPlayer mainPlayer = (MainPlayer)player;
         // Implement the logic for picking up a repair object
         // For example, add the boat part to the player's inventory
-        mainPlayer.AddBoatPart(this);
-        
-        // Disable or remove the repair object from the scene
-        gameObject.SetActive(false);
+        if (mainPlayer.AddBoatPart(this))
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            EventController.DestroyItem(this);
+        }
+
     }
     public static bool HasAllBoatParts(List<RepairObject> repairObjects)
     {
@@ -97,5 +101,14 @@ public class RepairObject : PickableObject
             default:
                 throw new Exception("Unknown behaviour for " + boatPart1);
         }
+    }
+
+    public void AddBoatPart(int i)
+    {
+        if (i < 0)
+        {
+            throw new Exception("Added amount mus be > 0");
+        }
+        currentAmount += i;
     }
 }

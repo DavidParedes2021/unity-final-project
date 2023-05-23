@@ -8,14 +8,16 @@ public abstract class Player : MonoBehaviour
     public double Stamina { set; get; }
     public double maxStamina;
     public double maxLife;
-    public double WalkVelocity { set; get; }
-    public double JumpForce { set; get; }
+    public float staminaLossRatePerSecond = 15f;
+    public float staminaRecoverRatePerSecond = 5f;
+    
+    public float lifeRecoverRatePerSecond = 5f;
+    public double WalkVelocity;
     public Weapon CurrentWeapon { set; get; }
     public List<Weapon> Weapons = new List<Weapon>();
     public List<Consumable> Consumables = new List<Consumable>();
     public EventController EventController;
-    public abstract void AddAmmunition(Ammunition otherAmmunition);
-
+    protected int MaxConsumablesAmount = 4;
     protected virtual void Awake()
     {
         Weapons ??= new List<Weapon>();
@@ -24,7 +26,7 @@ public abstract class Player : MonoBehaviour
         foreach (var weapon in newWeapons)
         {
             var weaponInstantiated = Instantiate(weapon);
-            AddWeapon(weaponInstantiated);
+            weaponInstantiated.PickUp(this);
         }
         Consumables ??= new List<Consumable>();
         var newConsumables = new List<Consumable>(Consumables);
@@ -74,22 +76,80 @@ public abstract class Player : MonoBehaviour
         {
             consumable.AttachToEventController(controller);
         }
+
+        this.EventController = controller;
     }
-    public void AddConsumable(Consumable consumable)
+
+    public bool AddConsumable(Consumable consumable)
     {
+        if (Consumables.Count == MaxConsumablesAmount)
+        {
+            return false;
+        }
+
+        Consumables.Add(consumable);
+        return true;
+    }
+    public bool UseConsumable(int slot)
+    {
+        if (slot >= Consumables.Count)
+        {
+            return false;
+        }
+        Consumable consumable = Consumables[slot];
         switch (consumable.consumableType)
         {
             case Consumable.ConsumableType.Food:
-                AddFood(consumable);
+                UseFood(consumable);
                 break;
             case Consumable.ConsumableType.Water:
-                AddWater(consumable);
+                UseWater(consumable);
                 break;
             default:
                 throw new NotImplementedException("Unknown Behaviour for: " + consumable);
         }
+
+        Consumables.Remove(consumable);
+        return true;
     }
 
+    public virtual void AddAmmunition(Ammunition otherAmmunition)
+    {
+        
+        if (CurrentWeapon!=null)
+        {
+            CurrentWeapon.MergeAmmunition(otherAmmunition);
+        }
+    }
+    protected virtual void UseFood(Consumable consumable)
+    {
+        Life += consumable.BenefitAmount;
+        consumable.BenefitAmount = 0;
+    }
+
+    protected virtual void UseWater(Consumable consumable)
+    {
+        Stamina += consumable.BenefitAmount;
+        consumable.BenefitAmount = 0;
+    }
+
+    public virtual bool AddWeapon(Weapon weapon)
+    {
+        for (var i = 0; i < Weapons.Count; i++)
+        {
+            if (Weapons[i].GetType() == weapon.GetType())
+            {
+                Weapons[i].MergeAmmunition(weapon.ammunition);
+                return false;
+            }
+        }
+        if (CurrentWeapon == null)
+        {
+            CurrentWeapon = weapon;
+        }
+        Weapons.Add(weapon);
+        return true;
+    }
     public void TakeDamage(Bullet bullet)
     {
         TakeDamage(bullet.damage);
@@ -101,13 +161,11 @@ public abstract class Player : MonoBehaviour
             throw new Exception("Damage must be positive");
         }
         Life -= damage;
+        if (Life < 0)
+        {
+            EventController.DestroyItem(this);
+        }
     }
-    protected abstract void AddFood(Consumable consumable);
-
-    protected abstract void AddWater(Consumable consumable);
-
-    public abstract void AddWeapon(Weapon weapon);
-
     public double GetStaminaPercentage()
     {
         return Stamina / maxStamina;
