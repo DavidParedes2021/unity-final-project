@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public abstract class Weapon : PickableObject{
     public GameObject weaponPrefab;
-    public int bulletVelocity = 10;
+    public int bulletVelocity = 50;
     public Sprite weaponImage;
     public int damage;
     public float fireRate;
@@ -18,16 +18,18 @@ public abstract class Weapon : PickableObject{
     private void Awake()
     {
         CollidableObject.AttachToScript(this.gameObject,nameof(Weapon));
-    }
-
-    private void Start()
-    {
         if (weaponImage == null)
         {
             Debug.LogWarning("No weapon image setter for"+this);
         }
         ammunition = weaponPrefab.GetOrAddComponent<Ammunition>();
         DefineInitialState(ammunition);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        StartRestoreFireRate();
     }
 
     public void FixedUpdate()
@@ -40,7 +42,7 @@ public abstract class Weapon : PickableObject{
 
     protected abstract void DefineInitialState(Ammunition ammunitionToSetUp);
 
-    protected abstract void Trigger();
+    public abstract void Trigger(GameObject owner,Vector3 position,Vector3 direction);
 
     public override void PickUp(Player player)
     {
@@ -53,18 +55,25 @@ public abstract class Weapon : PickableObject{
         ammunition.MergeAmmunition(otherAmmunition);
     }
     // Fire bullet method
-    public void FireBullet(Vector3 direction)
+    public void FireBullet(GameObject owner,Vector3 position, Vector3 direction)
     {
         // Instantiate a new bullet from the bulletPrefab
-        GameObject bulletObject = Instantiate(EventController.ResourcesManager.bulletPrefab, transform.position, Quaternion.identity);
+        GameObject bulletObject = Instantiate(EventController.ResourcesManager.bulletPrefab, position, Quaternion.identity);
 
         // Get the Bullet component from the instantiated bullet object
-        Bullet bullet = bulletObject.GetOrAddComponent<Bullet>();
+        Bullet bullet = U.GetOrAddComponent<Bullet>(bulletObject);
 
         // Set the bullet's properties
-        bullet.direction = direction.normalized;
         bullet.speed = bulletVelocity;
         bullet.damage = damage;
+        bullet.direction = direction;
+        // Calculate the rotation needed to align the bullet's forward vector with the specified direction
+        Quaternion rotation = Quaternion.LookRotation(direction);
+
+        // Apply the rotation to the bullet's transform
+        bullet.transform.rotation = rotation;
+
+        bullet.StartMoving(owner);
     }
     public void StartRestoreFireRate()
     {
@@ -104,5 +113,13 @@ public abstract class Weapon : PickableObject{
             return gun;
         }
         throw new Exception("The Game Object has not attached a weapon script!");
+    }
+
+    public void ReloadAmmo()
+    {
+        if (ammunition != null)
+        {
+            ammunition.Reload();
+        }
     }
 }

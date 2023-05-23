@@ -15,10 +15,13 @@ public class MinimapController : MonoBehaviour
 
     private void Awake()
     {
-        SetupMinimap(eventController,eventController.MainPlayer.transform);
     }
 
-    public void SetupMinimap(EventController ec, Transform transformm)
+    void Start () {
+       
+        StartMinimap(eventController,eventController.MainPlayer.transform);
+    }
+    public void StartMinimap(EventController ec, Transform transformm)
     {
         eventController = ec;
         followTransform = transformm;
@@ -30,6 +33,9 @@ public class MinimapController : MonoBehaviour
         minimapCamera.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         minimapCamera.orthographicSize = 9.0f;
         minimapCamera.transform.position = new Vector3(0f, 80f, 0f);
+
+        minimapCamera.transform.SetParent(transform);
+
 
         // Create the minimapRenderTexture
         minimapRenderTexture = new RenderTexture((int)_rectTransform.rect.width, (int)_rectTransform.rect.height, 0);
@@ -43,9 +49,6 @@ public class MinimapController : MonoBehaviour
         minimapRawImage.texture = minimapRenderTexture;
     }
 
-    void Start () {
-       
-    }
 
     void LateUpdate () {
         // Make the minimapCamera follow the followTransform

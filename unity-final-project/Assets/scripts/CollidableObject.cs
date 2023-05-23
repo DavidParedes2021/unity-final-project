@@ -59,6 +59,12 @@ public class CollidableObject : MonoBehaviour
             else if (otherBullet != null && thisMainPlayer != null)
             {
                 otherBullet.CollideWithPlayer(thisMainPlayer);
+            }else if (otherBullet != null && thisBulletObject != null)
+            {
+                Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+            }else if (thisBulletObject != null && thisBulletObject.ownerGO == collision.gameObject)
+            {
+                Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
             }
         }
         else if (collision.gameObject.layer == LayerMask.NameToLayer("Terrain") && thisBulletObject != null)

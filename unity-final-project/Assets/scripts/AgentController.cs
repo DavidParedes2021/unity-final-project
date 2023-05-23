@@ -57,7 +57,7 @@ public class AgentController : MonoBehaviour
         {
             movement.y = jumpSpeed;
         }
-
+        
         // Apply gravity
         movement.y -= gravity * Time.deltaTime;
 
@@ -90,4 +90,9 @@ public class AgentController : MonoBehaviour
 
     public delegate void LookDelegate(Vector2 lookInput);
     public event LookDelegate OnLook;
+
+    public Camera GetCamera()
+    {
+        return playerCamera;
+    }
 }

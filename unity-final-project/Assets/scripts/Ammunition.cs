@@ -34,14 +34,20 @@ public class Ammunition : PickableObject
     }
     public string Use(int amount)
     {
-        if (_ammoCount <= 0) {
-            return "Out of ammo";
-        }else if (_currentBulletsInCannon <= 0) {
-            return "Reload ammo";
-        }else if(_currentBulletsInCannon<amount) {
-            return "Not enough Ammo";
-        }else {
-            return "";
+        switch (_currentBulletsInCannon)
+        {
+            case <= 0 when _ammoCount>0:
+                return "Reload ammo";
+            case <= 0 when _ammoCount<=0:
+                return "Out of ammo";
+            default:
+            {
+                if(_currentBulletsInCannon<amount) {
+                    return "Not enough Ammo";
+                }
+                _currentBulletsInCannon--;
+                return "";
+            }
         }
     }
 

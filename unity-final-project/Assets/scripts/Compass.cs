@@ -24,14 +24,14 @@ public class Compass : MonoBehaviour
 			Debug.LogError("To use Compass you need an EvenController set up!.");
 			return;
 		}
-
-		gameObject.SetActive(true);
-		_mainPlayer = this.eventController.MainPlayer;
-		playerTransform = this.eventController.MainPlayer.transform;
 	}
 
 	private void Start()
 	{
+		gameObject.SetActive(true);
+		_mainPlayer = this.eventController.MainPlayer;
+		playerTransform = this.eventController.MainPlayer.transform;
+		
 		List<RepairObject> repairObjects = eventController.RepairObjects;
 		int sampleSize = (int)(repairObjects.Count * 0.1)+1;
 

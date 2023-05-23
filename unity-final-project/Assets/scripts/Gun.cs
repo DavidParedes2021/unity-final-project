@@ -8,12 +8,12 @@ public class Gun : Weapon
 
     protected override void DefineInitialState(Ammunition ammunitionToSetUp)
     {
+        ammunitionToSetUp.MaxBulletsInCannon = 20;
         ammunitionToSetUp.AddAmmo(initialAmmoCount);
-        ammunitionToSetUp.Reload();
         remainingFireRate = fireRate;
     }
 
-    protected override void Trigger()
+    public override void Trigger(GameObject owner, Vector3 position,Vector3 direction)
     {
         if (remainingFireRate >= fireRate) {
             var resultUseAmmo = ammunition.Use(1);
@@ -22,7 +22,7 @@ public class Gun : Weapon
                 return;
             } 
             remainingFireRate = 0;
-            FireBullet(EventController.getLookDirectionVector());
+            FireBullet(owner,position,direction);
         }
     }
 }

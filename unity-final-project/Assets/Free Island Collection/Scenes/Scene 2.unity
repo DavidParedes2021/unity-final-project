@@ -627,11 +627,15 @@ MonoBehaviour:
   ammunitionCountText: {fileID: 752400418}
   healthSlider: {fileID: 1443827880}
   staminaSlider: {fileID: 1441473723}
-  inventorySlots: []
+  inventorySlots:
+  - {fileID: 807396583}
+  - {fileID: 809250246}
+  - {fileID: 7599792}
+  - {fileID: 1111914879}
   compassBackgroundImage: {fileID: 0}
   compassImage: {fileID: 0}
   minimap: {fileID: 1672755323}
-  messageText: {fileID: 0}
+  messageText: {fileID: 1595396174}
   eventController: {fileID: 1094073310}
 --- !u!1 &752400416
 GameObject:
@@ -2420,7 +2424,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Out of ammo
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

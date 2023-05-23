@@ -13,7 +13,7 @@ public abstract class Player : MonoBehaviour
     public Weapon CurrentWeapon { set; get; }
     public List<Weapon> Weapons = new List<Weapon>();
     public List<Consumable> Consumables = new List<Consumable>();
-
+    public EventController EventController;
     public abstract void AddAmmunition(Ammunition otherAmmunition);
 
     protected virtual void Awake()
@@ -23,17 +23,58 @@ public abstract class Player : MonoBehaviour
         Weapons.RemoveRange(0,Weapons.Count);
         foreach (var weapon in newWeapons)
         {
-            AddWeapon(weapon);
+            var weaponInstantiated = Instantiate(weapon);
+            AddWeapon(weaponInstantiated);
         }
         Consumables ??= new List<Consumable>();
         var newConsumables = new List<Consumable>(Consumables);
         Consumables.RemoveRange(0,Consumables.Count);
         foreach (var consumable in newConsumables)
         {
-            AddConsumable(consumable);
+            var instantiatedConsumable = Instantiate(consumable);
+            AddConsumable(instantiatedConsumable);
         }
     }
+    public void SwitchToNextWeapon()
+    {
+        if (Weapons.Count == 0)
+        {
+            return;
+        }
 
+        int currentIndex = Weapons.IndexOf(CurrentWeapon);
+        int nextIndex = (currentIndex + 1) % Weapons.Count;
+        CurrentWeapon = Weapons[nextIndex];
+    }
+
+    public void SwitchToPreviousWeapon()
+    {
+        if (Weapons.Count == 0)
+        {
+            return;
+        }
+
+        int currentIndex = Weapons.IndexOf(CurrentWeapon);
+        int previousIndex = currentIndex - 1;
+        if (previousIndex < 0)
+        {
+            previousIndex = Weapons.Count - 1;
+        }
+        CurrentWeapon = Weapons[previousIndex];
+    }
+
+    public virtual void attachToEventControlelr(EventController controller)
+    {
+        foreach (var weapon in Weapons)
+        {
+            weapon.AttachToEventController(controller);
+        }
+
+        foreach (var consumable in Consumables)
+        {
+            consumable.AttachToEventController(controller);
+        }
+    }
     public void AddConsumable(Consumable consumable)
     {
         switch (consumable.consumableType)

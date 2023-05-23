@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -39,6 +40,11 @@ public class EventController : MonoBehaviour
         {
                 InstantiateListHolders();
                 SpawnGO();
+        }
+        
+        private void Start()
+        {
+                StartCoroutine(SpawnZombiesCoroutine());
         }
 
         private void SpawnGO()
@@ -82,6 +88,8 @@ public class EventController : MonoBehaviour
                 GameObject repairObj = Instantiate(prefab, randomPosition, Quaternion.identity);
                 RepairObject repairObject = repairObj.GetComponent<RepairObject>();
                 repairObject.boatPart = boatPart;
+                
+                repairObject.AttachToEventController(this);
 
                 RepairObjects.Add(repairObject);
         }
@@ -114,10 +122,6 @@ public class EventController : MonoBehaviour
                 }
         }
 
-        private void Start()
-        {
-                StartCoroutine(SpawnZombiesCoroutine());
-        }
 
         private void SpawnMainPlayer()
         {
@@ -127,6 +131,7 @@ public class EventController : MonoBehaviour
                 GameObject mainPlayerObj = Instantiate(mainPlayerPrefab, randomTerrainPosition, Quaternion.identity);
                 MainPlayer mainPlayer = U.GetOrAddComponent<MainPlayer>(mainPlayerObj);
                 MainPlayer = mainPlayer;
+                MainPlayer.attachToEventControlelr(this);
         }
         private void SpawnAmmunition()
         {
@@ -135,6 +140,7 @@ public class EventController : MonoBehaviour
 
                 GameObject ammunitionGo = Instantiate(ammunitionPrefab, randomTerrainPosition, Quaternion.identity);
                 Ammunition ammunition = U.GetOrAddComponent<Ammunition>(ammunitionGo);
+                ammunition.AttachToEventController(this);
                 Ammunitions.Add(ammunition);
         }
         private void SpawnWeapon()
@@ -144,6 +150,7 @@ public class EventController : MonoBehaviour
 
                 GameObject weaponGo = Instantiate(weaponPrefab, randomTerrainPosition, Quaternion.identity);
                 Weapon weapon = Weapon.RequireWeapon(weaponGo);
+                weapon.AttachToEventController(this);
                 Weapons.Add(weapon);
         }
 
@@ -204,12 +211,5 @@ public class EventController : MonoBehaviour
                 Vector3 randomPosition = new Vector3(randomX, terrainHeight+7, randomZ);
 
                 return randomPosition;
-        }
-
-
-
-        public Vector3 getLookDirectionVector()
-        {
-                throw new System.NotImplementedException();
         }
 }

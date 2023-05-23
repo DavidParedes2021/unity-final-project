@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7749476189632375288}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.591, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -197,8 +197,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
+  m_Radius: 1
+  m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7749476190325500367
@@ -217,4 +217,7 @@ MonoBehaviour:
   maxLife: 0
   Weapons:
   - {fileID: -2040205073113380315, guid: ce74f20918093284fa7202f63bef5d46, type: 3}
+  - {fileID: 7884444562145169586, guid: c46c0c67a5d66324bb356ee243ffa3ae, type: 3}
+  - {fileID: 7606120223683746624, guid: 4974097070017f14b9da0c81a652621d, type: 3}
   Consumables: []
+  EventController: {fileID: 0}

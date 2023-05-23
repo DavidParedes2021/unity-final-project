@@ -19,16 +19,12 @@ public class ResourcesManager:MonoBehaviour
     public GameObject propellerBoatPartPrefab;
     public GameObject gasolineBoatPartPrefab;
 
-    private void Awake()
-    {
-        _weapons = new List<GameObject>();
-        _weapons.Add(machineGunPrefab);
-        _weapons.Add(gunPrefab);
-        _weapons.Add(shotgunPrefab);
-    }
 
     public GameObject chooseRandomWeapon()
     {
+        if (_weapons == null || _weapons.Count==0) {
+            _weapons=new (){machineGunPrefab,gunPrefab,shotgunPrefab};
+        }
         return _weapons[Random.Range(0, _weapons.Count)];
     }
     public  GameObject GetBoatPartPrefab(RepairObject.BoatPart boatPart)

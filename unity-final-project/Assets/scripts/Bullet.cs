@@ -6,19 +6,27 @@ public class Bullet : MonoBehaviour
     public float speed;
     public Vector3 direction;
     public int damage;
-
+    private Rigidbody _rigidbody;
+    public GameObject ownerGO;
+    
     private void Awake()
     {
+        _rigidbody = U.GetOrAddComponent<Rigidbody>(gameObject);
         CollidableObject.AttachToScript(this.gameObject,nameof(MainPlayer));
     }
 
-    private void Update()
+    public void StartMoving(GameObject owner)
     {
-        Move();
+        this.ownerGO = owner;
+        _rigidbody.velocity = direction * speed;
     }
 
     public void CollideWithPlayer(Player player)
     {
+        if (player.gameObject == ownerGO)
+        {
+            return;
+        }
         player.TakeDamage(this);
         Destroy(this);
     }
@@ -26,9 +34,4 @@ public class Bullet : MonoBehaviour
     {
         Destroy(this);
     }
-    private void Move()
-    {
-        transform.Translate(direction * (speed * Time.deltaTime));
-    }
-
 }
