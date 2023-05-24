@@ -111,4 +111,9 @@ public class RepairObject : PickableObject
         }
         currentAmount += i;
     }
+
+    public bool IsComplete()
+    {
+        return currentAmount >= amountNeeded;
+    }
 }

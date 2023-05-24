@@ -161,4 +161,9 @@ public class MainPlayer : Player
         BoatParts.Add(boatPart);
         return true;
     }
+
+    public bool HasAllBoatParts()
+    {
+        return BoatParts.All(repairObject => repairObject.IsComplete());
+    }
 }

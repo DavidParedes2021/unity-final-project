@@ -15,12 +15,15 @@ public class EventController : MonoBehaviour
         }
         public void notifyEvent(NotificationType notiType, string message)
         {
+               notifyEvent(notiType,message,2f);
+        }
+        public void notifyEvent(NotificationType notiType, string message, float time)
+        {
                 if (notiType == NotificationType.ScreenMessage)
                 {
-                        UIController.WriteMessage(message, 2f);
+                        UIController.WriteMessage(message, time);
                 }
         }
-
         public UIController UIController;
         public List<Zombie> Zombies { get; set; }
         public MainPlayer MainPlayer { get; set; }
@@ -262,6 +265,11 @@ public class EventController : MonoBehaviour
         }
 
         private void EndGame()
+        {
+                throw new NotImplementedException();
+        }
+
+        public void WinGame()
         {
                 throw new NotImplementedException();
         }
