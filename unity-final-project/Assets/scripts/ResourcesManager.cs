@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 public class ResourcesManager:MonoBehaviour
@@ -19,6 +20,7 @@ public class ResourcesManager:MonoBehaviour
     public GameObject engineBoatPartPrefab;
     public GameObject propellerBoatPartPrefab;
     public GameObject gasolineBoatPartPrefab;
+    public GameObject boatPrefab;
 
     [FormerlySerializedAs("food")] public GameObject foodPrefab;
     [FormerlySerializedAs("water")] public GameObject waterPrefab;

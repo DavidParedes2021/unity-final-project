@@ -15,15 +15,13 @@ public class UIController : MonoBehaviour
     public Slider healthSlider;
     public Slider staminaSlider;
     public Image[] inventorySlots;
-    public Image compassBackgroundImage;
-    public Image compassImage;
-    public GameObject minimap;
+    public Compass Compass;
+    public MinimapController MinimapController;
     public TextMeshProUGUI messageText;
     public EventController eventController;
 
     private MainPlayer _mainPlayer;
     private int maxInventorySlots = 4;
-    private int missionStatus = 0; 
 
     // Start is called before the first frame update
     private void Awake()
@@ -45,16 +43,6 @@ public class UIController : MonoBehaviour
         UpdateHealthSlider(_mainPlayer);
         UpdateStaminaSlider(_mainPlayer);
         UpdateInventorySlots(_mainPlayer);
-        UpdateMissionStatus(_mainPlayer);
-    }
-
-    private void UpdateMissionStatus(MainPlayer mainPlayer)
-    {
-        if (mainPlayer.HasAllBoatParts() && missionStatus==0)
-        {
-            missionStatus = 1;
-            WriteMessage("Localiza al barco y reparalo",3000);
-        }
     }
 
     private void UpdateInventorySlots(MainPlayer mainPlayer)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -36,11 +37,20 @@ public class EventController : MonoBehaviour
         
         public ResourcesManager ResourcesManager;
 
+        public Boat Boat;
+
         public int maxZombies=100;
         public float spawnZombieRateInSeconds=1f;
 
+        public int missionStatus { get; set; }
+        public const int MissionNotStarted = -1;
+        public const int FindBoatPartsStatus = 0;
+        public const int RepairBoatStatus = 1;
+
         private void Awake()
         {
+                missionStatus = MissionNotStarted;
+                
                 InstantiateListHolders();
                 SpawnGO();
         }
@@ -50,9 +60,27 @@ public class EventController : MonoBehaviour
                 StartCoroutine(SpawnZombiesCoroutine());
         }
 
+        private void Update()
+        {
+                if (missionStatus == MissionNotStarted)
+                {
+                        missionStatus = FindBoatPartsStatus;  
+                        RequireTargetsForCompass(UIController.Compass);
+                        notifyEvent(NotificationType.ScreenMessage,"Encuentra las piezas del barco!");
+                }else if (MainPlayer.HasAllBoatParts() && missionStatus==FindBoatPartsStatus)
+                {
+                        missionStatus = RepairBoatStatus;
+                        RequireTargetsForCompass(UIController.Compass);
+                        notifyEvent(NotificationType.ScreenMessage,"Encuentra el barco y reparalo!");
+                }else if (Boat.IsRepaired()) {
+                        WinGame();
+                }
+        }
+
         private void SpawnGO()
         {
                 SpawnMainPlayer();
+                SpawnBoat();
                 for (int i = 0; i < 50; i++)
                 {
                         SpawnAmmunition();
@@ -80,8 +108,16 @@ public class EventController : MonoBehaviour
 
                 for (int i = 0; i < 30; i++)
                 {
-                        SpawnRepairObject(RepairObject.BoatPart.Engine);
+                        SpawnRepairObject(RepairObject.BoatPart.Gasoline);
                 }
+        }
+        private void SpawnBoat()
+        {
+                Vector3 randomBoatPosition = GetRandomTerrainPosition(minElevation:5,maxElevation:20);
+                var boatInstantiated = Instantiate(ResourcesManager.boatPrefab, randomBoatPosition, Quaternion.identity);
+                var boat = Boat.requireBoatScript(boatInstantiated);
+                this.Boat = boat;
+                this.Boat.AttachToPlayer(MainPlayer);
         }
 
         private void SpawnConsumables()
@@ -186,14 +222,14 @@ public class EventController : MonoBehaviour
         }
 
         public Vector3 GetRandomTerrainPosition(Vector3 centralPosition = default,
-                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f)
+                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f,float maxElevation = 100f)
         {
                 return GetRandomTerrainPosition(ResourcesManager.currentTerrain,centralPosition, lowerLimitDistance, upperLimitDistance,
                         minElevation);
         }
 
         private static Vector3 GetRandomTerrainPosition(Terrain currentTerrain, Vector3 centralPosition = default,
-                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f)
+                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f, float maxElevation = 100f)
         {
                 Vector3 terrainSize = currentTerrain.terrainData.size;
                 float randomX, randomZ;
@@ -207,7 +243,7 @@ public class EventController : MonoBehaviour
 
                         // Get the height at the random position
                         terrainHeight = currentTerrain.SampleHeight(new Vector3(randomX, 0f, randomZ));
-
+                        
                         // Check if centralPosition is specified
                         if (centralPosition != Vector3.zero)
                         {
@@ -219,7 +255,7 @@ public class EventController : MonoBehaviour
                                         continue;
                         }
 
-                } while (terrainHeight < minElevation);
+                } while (terrainHeight<maxElevation && terrainHeight > minElevation);
 
                 // Set the random position with the correct height
                 Vector3 randomPosition = new Vector3(randomX, terrainHeight+7, randomZ);
@@ -272,5 +308,48 @@ public class EventController : MonoBehaviour
         public void WinGame()
         {
                 throw new NotImplementedException();
+        }
+
+        public void RequireTargetsForCompass(Compass compass)
+        {
+                //List<RepairObject> randomSampleRepairObjects = repairObjects.OrderBy(item => Random.Range(0, repairObjects.Count)).Take(sampleSize).ToList();
+                List<GameObject> repairObjectsEngine = new List<GameObject>();
+                List<GameObject> repairObjectsPropeller = new List<GameObject>();
+                List<GameObject> repairObjectsGasoline = new List<GameObject>();
+                foreach (var repairObject in RepairObjects)
+                {
+                        switch (repairObject.boatPart)
+                        {
+                                case RepairObject.BoatPart.Engine:
+                                        repairObjectsEngine.Add(repairObject.gameObject);
+                                        break;
+                                case RepairObject.BoatPart.Propeller:
+                                        repairObjectsPropeller.Add(repairObject.gameObject);
+                                        break;
+                                case RepairObject.BoatPart.Gasoline:
+                                        repairObjectsGasoline.Add(repairObject.gameObject);
+                                        break;
+                                default:
+                                        throw new ArgumentOutOfRangeException("Unknown behaviour for the repair object: "+repairObject);
+                        }
+                }
+                repairObjectsEngine = repairObjectsEngine.Take((int)(repairObjectsEngine.Count * 0.05)+1).ToList();
+                repairObjectsPropeller = repairObjectsPropeller.Take((int)(repairObjectsPropeller.Count * 0.05)+1).ToList();
+                repairObjectsGasoline = repairObjectsGasoline.Take((int)(repairObjectsGasoline.Count * 0.05)+1).ToList();
+                compass.RemoveTargets();
+                switch (missionStatus)
+                {
+                        case FindBoatPartsStatus:
+                                compass.AddTargets(repairObjectsEngine,Compass.GetIdByColor(Color.yellow));
+                                compass.AddTargets(repairObjectsPropeller,Compass.GetIdByColor(Color.blue));
+                                compass.AddTargets(repairObjectsGasoline,Compass.GetIdByColor(Color.red));
+                
+                                compass.AddTargets(new List<GameObject> {Boat.gameObject},Compass.GetIdByColor(Color.black));
+                                break;
+                        case RepairBoatStatus:
+                                compass.AddTargets(new List<GameObject> {Boat.gameObject},Compass.GetIdByColor(Color.black));
+                                break;
+                }
+                
         }
 }

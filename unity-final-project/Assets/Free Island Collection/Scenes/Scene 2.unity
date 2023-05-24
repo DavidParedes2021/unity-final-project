@@ -632,9 +632,8 @@ MonoBehaviour:
   - {fileID: 809250246}
   - {fileID: 7599792}
   - {fileID: 1111914879}
-  compassBackgroundImage: {fileID: 0}
-  compassImage: {fileID: 0}
-  minimap: {fileID: 1672755323}
+  Compass: {fileID: 1346975019}
+  MinimapController: {fileID: 1672755327}
   messageText: {fileID: 1595396174}
   eventController: {fileID: 1094073310}
 --- !u!1 &752400416
@@ -1257,6 +1256,7 @@ MonoBehaviour:
   RepairObjects: []
   Ammunitions: []
   ResourcesManager: {fileID: 1094073311}
+  Boat: {fileID: 0}
   maxZombies: 170
   spawnZombieRateInSeconds: 1
 --- !u!114 &1094073311
@@ -1282,6 +1282,7 @@ MonoBehaviour:
   engineBoatPartPrefab: {fileID: 2646327208407885898, guid: 09e11fad949e0364f99e06e48f6298f8, type: 3}
   propellerBoatPartPrefab: {fileID: 902466320148218752, guid: 5bb8e2921a2e67149a81beb984c90d7e, type: 3}
   gasolineBoatPartPrefab: {fileID: 1986381244932964377, guid: 313739f92b2063b42b79ff12d8eca402, type: 3}
+  boatPrefab: {fileID: 2405608565877436639, guid: 763c452b82ef45e44859c5b496d45f3b, type: 3}
   foodPrefab: {fileID: 7777786775798006959, guid: 9571f2e16e5315343aa2ca99d605617c, type: 3}
   waterPrefab: {fileID: 6489474069645919701, guid: 8109ce51f9565ed489736999413b0a2a, type: 3}
 --- !u!1 &1097072138

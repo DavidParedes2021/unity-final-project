@@ -1,18 +1,16 @@
 ﻿using System;
 using UnityEngine;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Boat : MonoBehaviour
 {
     private MainPlayer mainPlayer;
-    public float timeSinceLastMessage = 0;
+    private float timeSinceLastMessage = 0;
+    private bool isRepaired;
+
+    private void Awake()
+    {
+        isRepaired = false;
+    }
 
     public void AttachToPlayer(MainPlayer newMainPlayer)
     {
@@ -35,10 +33,26 @@ public class Boat : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.P)) {
             if (mainPlayer.HasAllBoatParts())
             {
-                mainPlayer.EventController.WinGame();
+                isRepaired = true;
             }else {
                 mainPlayer.EventController.notifyEvent(EventController.NotificationType.ScreenMessage,"No has reunido todas las partes del bote");
             }
         }
+    }
+
+    public static Boat requireBoatScript(GameObject gameObject)
+    {
+        var boat = gameObject.GetComponent<Boat>();
+        if (boat==null)
+        {
+            throw new Exception("A boat script is required and it is not present!");
+        }
+
+        return boat;
+    }
+
+    public bool IsRepaired()
+    {
+        return isRepaired;
     }
 }

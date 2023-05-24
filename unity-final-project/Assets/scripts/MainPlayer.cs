@@ -82,6 +82,10 @@ public class MainPlayer : Player
     }
 
 
+    public bool HasAllBoatParts()
+    {
+        return BoatParts.All(repairObject => repairObject.IsComplete());
+    }
     public override void attachToEventControlelr(EventController controller)
     {
         base.attachToEventControlelr(controller);
@@ -162,8 +166,4 @@ public class MainPlayer : Player
         return true;
     }
 
-    public bool HasAllBoatParts()
-    {
-        return BoatParts.All(repairObject => repairObject.IsComplete());
-    }
 }

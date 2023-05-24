@@ -16,7 +16,34 @@ public class Compass : MonoBehaviour
 	public TextMeshProUGUI CompassDirectionText;
 	public EventController eventController;
 	private List<(GameObject,(Transform,TextMeshProUGUI, Color))> targets;
+	public static (int, Color)[] idColors = { (1, Color.black), (2, Color.red), (3, Color.yellow), (4, Color.blue) };
 
+	public static Color GetColorById(int id)
+	{
+		foreach (var (colorId, color) in idColors)
+		{
+			if (colorId == id)
+			{
+				return color;
+			}
+		}
+		// Return a default color if the ID is not found
+		return Color.white;
+	}
+
+	public static int GetIdByColor(Color color)
+	{
+		foreach (var (colorId, col) in idColors)
+		{
+			if (col == color)
+			{
+				return colorId;
+			}
+		}
+
+		// Return -1 if the color is not found
+		return -1;
+	}
 	private void Awake()
 	{
 		if (eventController == null)
@@ -35,45 +62,19 @@ public class Compass : MonoBehaviour
 		List<RepairObject> repairObjects = eventController.RepairObjects;
 		int sampleSize = (int)(repairObjects.Count * 0.1)+1;
 
-		List<RepairObject> randomSampleRepairObjects = repairObjects.OrderBy(item => Random.Range(0, repairObjects.Count)).Take(sampleSize).ToList();
-
-		AddRepairObjectTargets(randomSampleRepairObjects);
 	}
 
-	private void AddRepairObjectTargets(List<RepairObject> mainPlayerBoatParts)
+	public void AddTargets(List<GameObject> targetGameObjects, int id)
 	{
-		List<int> ids = new List<int>();
-		List<GameObject> targetGo = new List<GameObject>();
-		foreach (var o in mainPlayerBoatParts)
-		{
-			targetGo.Add(o.gameObject);
-			ids.Add(1);
-		}
-		addTargets(targetGo, ids);
+		List<int> ids = targetGameObjects.Select(_ => id).ToList();
+		AddTargets(targetGameObjects,ids);
 	}
-
-	public void addTargets(List<GameObject> targetGameObjects, List<int> ids)
+	public void AddTargets(List<GameObject> targetGameObjects, List<int> ids)
 	{
 		if (targets == null) targets = new List<(GameObject, (Transform,TextMeshProUGUI,Color))>();
 		for (int i = 0; i < targetGameObjects.Count; i++)
 		{
-			Color targetColor;
-			switch (ids[i])
-			{
-				case 1:
-					targetColor = Color.black;
-					break;
-				case 2:
-					targetColor = Color.blue;
-					break;
-				case 3:
-					targetColor = Color.yellow;
-					break;
-				default:
-					targetColor = Color.red;
-					break;
-			}
-
+			Color targetColor = GetColorById(ids[i]);
 			var transform1 = Instantiate(targetPrefab,transform).transform;
 			transform1.gameObject.GetComponent<Image>().color = targetColor;
 			targets.Add((targetGameObjects[i].gameObject,(transform1,transform1.Find("Distance").gameObject.GetOrAddComponent<TextMeshProUGUI>(),targetColor)));
@@ -101,7 +102,7 @@ public class Compass : MonoBehaviour
 		
 		foreach (var (gameObj, (targetTransform,TextMeshProUGUI,targetColor)) in targets)
 		{
-			if (gameObj.IsDestroyed())
+			if (gameObj.IsDestroyed() || !gameObj.activeSelf)
 			{
 				targetTransform.gameObject.SetActive(false);
 				continue;
@@ -174,5 +175,10 @@ public class Compass : MonoBehaviour
 				CompassDirectionText.text = headingAngle.ToString();
 				break;
 		}
+	}
+
+	public void RemoveTargets()
+	{
+		targets?.RemoveRange(0,targets.Count);
 	}
 }
