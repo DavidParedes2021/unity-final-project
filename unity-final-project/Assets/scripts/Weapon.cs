@@ -14,7 +14,9 @@ public abstract class Weapon : PickableObject{
     public float remainingFireRate;
     public Ammunition ammunition;
     private Coroutine _restoreFireRateCoroutine;
-
+    public double zoomFactor=1.1;
+    public bool isZoomed = false;
+    public float reloadTime = 3f;
     private void Awake()
     {
         CollidableObject.AttachToScript(this.gameObject,nameof(Weapon));
@@ -51,7 +53,15 @@ public abstract class Weapon : PickableObject{
             EventController.DestroyItem(this);
         }
     }
+    public virtual void ZoomIn(Camera camera)
+    {
+        camera.fieldOfView = (float)(camera.fieldOfView/zoomFactor);
+    }
 
+    public virtual void ZoomOut(Camera camera)
+    {
+        camera.fieldOfView = (float)(camera.fieldOfView*zoomFactor);
+    }
     public void MergeAmmunition(Ammunition otherAmmunition)
     {
         ammunition.MergeAmmunition(otherAmmunition);
@@ -121,7 +131,16 @@ public abstract class Weapon : PickableObject{
     {
         if (ammunition != null)
         {
-            ammunition.Reload();
+            StartCoroutine(ReloadCoroutine());
         }
+    }
+
+    private IEnumerator ReloadCoroutine()
+    {
+        // Wait for the reload time
+        yield return new WaitForSeconds(reloadTime);
+
+        // Reload the ammunition
+        ammunition.Reload();
     }
 }

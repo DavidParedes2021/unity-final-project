@@ -19,7 +19,7 @@ public class UIController : MonoBehaviour
     public MinimapController MinimapController;
     public TextMeshProUGUI messageText;
     public EventController eventController;
-
+    public Image zoomImage;
     private MainPlayer _mainPlayer;
     private int maxInventorySlots = 4;
 
@@ -171,5 +171,11 @@ public class UIController : MonoBehaviour
         }
 
         messageText.enabled = false; // Ensure the text is not visible at the end of blinking
+    }
+
+    public void setZoomImage(Sprite o)
+    {
+        zoomImage.overrideSprite = o;
+        zoomImage.SetNativeSize();
     }
 }

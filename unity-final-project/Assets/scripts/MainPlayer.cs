@@ -9,13 +9,15 @@ using Random = UnityEngine.Random;
 
 public class MainPlayer : Player
 {
+    
     public HashSet<RepairObject> BoatParts = new();
 
     private AgentController _agentController;
     
     private Coroutine _statisticsRestoreCoroutine;
     private bool _isShooting;
-
+    public float fov;
+    private bool isZoomed=false;
     protected override void Awake()
     {
         base.Awake();
@@ -42,6 +44,7 @@ public class MainPlayer : Player
 
     private void Start()
     {
+        _agentController.GetCamera().fieldOfView = fov;
         _statisticsRestoreCoroutine = StartCoroutine(RestoreStatisticsCoroutine());
     }
 
@@ -97,6 +100,11 @@ public class MainPlayer : Player
 
     private void Update()
     {
+        if (Math.Abs(_agentController.GetCamera().fieldOfView - fov) > 0.1 && !isZoomed)
+        {
+            _agentController.GetCamera().fieldOfView = fov;
+            EventController.UIController.setZoomImage(null);
+        }
         if (Stamina <= 0)
         {
             _agentController.DisableRun();
@@ -125,6 +133,16 @@ public class MainPlayer : Player
         {
             _isShooting = true;
         }
+        if (Input.GetMouseButtonDown(1))
+        {
+            isZoomed = true;
+            CurrentWeapon.ZoomIn(_agentController.GetCamera());
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            isZoomed = false;
+            CurrentWeapon.ZoomOut(_agentController.GetCamera());
+        }
 
         if (_isShooting && CurrentWeapon != null)
         {
@@ -136,15 +154,25 @@ public class MainPlayer : Player
         }
         // Cambiar de arma usando la rueda del ratón
         float scrollDelta = Input.GetAxis("Mouse ScrollWheel");
-        if (scrollDelta > 0f)
+        switch (scrollDelta)
         {
-            SwitchToNextWeapon();
-        }
-        else if (scrollDelta < 0f)
-        {
-            SwitchToPreviousWeapon();
+            case > 0f:
+                SwitchToNextWeapon();
+                RestoreZoom();
+                break;
+            case < 0f:
+                SwitchToPreviousWeapon();
+                RestoreZoom();
+                break;
         }
         
+    }
+
+    private void RestoreZoom()
+    {
+        isZoomed = false;
+        _agentController.GetCamera().fieldOfView = fov;
+        EventController.UIController.setZoomImage(null);
     }
 
     private Vector3 GetLookingDirection()

@@ -37,7 +37,7 @@ public class EventController : MonoBehaviour
         
         public ResourcesManager ResourcesManager;
 
-        public Boat Boat;
+        public Boat Boat { get; set; }
 
         public int maxZombies=100;
         public float spawnZombieRateInSeconds=1f;
@@ -333,9 +333,9 @@ public class EventController : MonoBehaviour
                                         throw new ArgumentOutOfRangeException("Unknown behaviour for the repair object: "+repairObject);
                         }
                 }
-                repairObjectsEngine = repairObjectsEngine.Take((int)(repairObjectsEngine.Count * 0.05)+1).ToList();
-                repairObjectsPropeller = repairObjectsPropeller.Take((int)(repairObjectsPropeller.Count * 0.05)+1).ToList();
-                repairObjectsGasoline = repairObjectsGasoline.Take((int)(repairObjectsGasoline.Count * 0.05)+1).ToList();
+                repairObjectsEngine = repairObjectsEngine.Take((int)(repairObjectsEngine.Count * 0.1)+1).ToList();
+                repairObjectsPropeller = repairObjectsPropeller.Take((int)(repairObjectsPropeller.Count * 0.1)+1).ToList();
+                repairObjectsGasoline = repairObjectsGasoline.Take((int)(repairObjectsGasoline.Count * 0.1)+1).ToList();
                 compass.RemoveTargets();
                 switch (missionStatus)
                 {
