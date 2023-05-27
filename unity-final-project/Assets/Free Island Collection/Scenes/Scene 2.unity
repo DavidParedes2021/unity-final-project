@@ -1334,8 +1334,8 @@ MonoBehaviour:
   RepairObjects: []
   Ammunitions: []
   ResourcesManager: {fileID: 1094073311}
-  maxZombies: 170
-  spawnZombieRateInSeconds: 1
+  maxZombies: 1000
+  spawnZombieRateInSeconds: 0.05
 --- !u!114 &1094073311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1356,6 +1356,7 @@ MonoBehaviour:
   gunPrefab: {fileID: 494021140847033098, guid: ce74f20918093284fa7202f63bef5d46, type: 3}
   shotgunPrefab: {fileID: 7230029751196384592, guid: c46c0c67a5d66324bb356ee243ffa3ae, type: 3}
   sniperPrefab: {fileID: 7101028052309395249, guid: 5f643028ab2c3a449b8ec7aed44649fc, type: 3}
+  grenadeLauncherPrefab: {fileID: 1240534969081247837, guid: 42c8f5bb63795c544b6b49b203a77cf8, type: 3}
   ammunitionPrefab: {fileID: 1106679006131998684, guid: 5ca8081b9602e7e4b802c48615dcc06e, type: 3}
   engineBoatPartPrefab: {fileID: 2646327208407885898, guid: 09e11fad949e0364f99e06e48f6298f8, type: 3}
   propellerBoatPartPrefab: {fileID: 902466320148218752, guid: 5bb8e2921a2e67149a81beb984c90d7e, type: 3}

@@ -118,6 +118,9 @@ MonoBehaviour:
   fireRate: 0.2
   remainingFireRate: 0
   ammunition: {fileID: 5966416692598429437, guid: 5ca8081b9602e7e4b802c48615dcc06e, type: 3}
+  zoomFactor: 1.5
+  isZoomed: 0
+  reloadTime: 3
   initialAmmoCount: 100
   burstCount: 2
 --- !u!54 &4738255756077456523

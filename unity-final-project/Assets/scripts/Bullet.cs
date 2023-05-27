@@ -8,7 +8,8 @@ public class Bullet : MonoBehaviour
     public int damage;
     private Rigidbody _rigidbody;
     public GameObject ownerGO;
-    
+    public float destroyAfter { get; set; } = 5;
+
     private void Awake()
     {
         _rigidbody = U.GetOrAddComponent<Rigidbody>(gameObject);
@@ -32,7 +33,7 @@ public class Bullet : MonoBehaviour
     }
     public void CollideWithNothing()
     {
-        Invoke(nameof(DestroyGo),5f);
+        Invoke(nameof(DestroyGo),destroyAfter);
     }
 
     private void DestroyGo()

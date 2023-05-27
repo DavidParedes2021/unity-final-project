@@ -16,13 +16,14 @@ public class ResourcesManager:MonoBehaviour
     public GameObject gunPrefab;
     public GameObject shotgunPrefab;
     public GameObject sniperPrefab;
+    public GameObject grenadeLauncherPrefab;
     private List<GameObject> _weapons; 
     public GameObject ammunitionPrefab;
     public GameObject engineBoatPartPrefab;
     public GameObject propellerBoatPartPrefab;
     public GameObject gasolineBoatPartPrefab;
     public GameObject boatPrefab;
-
+    
     [FormerlySerializedAs("food")] public GameObject foodPrefab;
     [FormerlySerializedAs("water")] public GameObject waterPrefab;
     private List<GameObject> consumablesPrefabs;
@@ -30,7 +31,7 @@ public class ResourcesManager:MonoBehaviour
     public GameObject chooseRandomWeapon()
     {
         if (_weapons == null || _weapons.Count==0) {
-            _weapons=new List<GameObject> {machineGunPrefab,gunPrefab,shotgunPrefab,sniperPrefab};
+            _weapons=new List<GameObject> {machineGunPrefab,gunPrefab,shotgunPrefab,sniperPrefab,grenadeLauncherPrefab};
         }
         return _weapons[Random.Range(0, _weapons.Count)];
     }

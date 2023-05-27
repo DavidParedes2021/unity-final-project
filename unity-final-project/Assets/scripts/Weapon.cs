@@ -67,7 +67,7 @@ public abstract class Weapon : PickableObject{
         ammunition.MergeAmmunition(otherAmmunition);
     }
     // Fire bullet method
-    public void FireBullet(GameObject owner,Vector3 position, Vector3 direction)
+    public Bullet FireBullet(GameObject owner,Vector3 position, Vector3 direction)
     {
         // Instantiate a new bullet from the bulletPrefab
         GameObject bulletObject = Instantiate(EventController.ResourcesManager.bulletPrefab, position, Quaternion.identity);
@@ -86,6 +86,8 @@ public abstract class Weapon : PickableObject{
         bullet.transform.rotation = rotation;
 
         bullet.StartMoving(owner);
+
+        return bullet;
     }
     public void StartRestoreFireRate()
     {
@@ -109,22 +111,13 @@ public abstract class Weapon : PickableObject{
 
     public static Weapon RequireWeapon(GameObject weaponGo)
     {
-        MachineGun machineGun = weaponGo.GetComponent<MachineGun>();
-        if(machineGun!=null)
+        var component = weaponGo.GetComponent<Weapon>();
+        if (component == null)
         {
-            return machineGun;
+            throw new Exception("A weapon script is required to be attached to:" + weaponGo);
         }
-        ShotGun shotGun = weaponGo.GetComponent<ShotGun>();
-        if(shotGun!=null)
-        {
-            return shotGun;
-        }
-        Gun gun = weaponGo.GetComponent<Gun>();
-        if (gun != null)
-        {
-            return gun;
-        }
-        throw new Exception("The Game Object has not attached a weapon script!");
+
+        return component;
     }
 
     public void ReloadAmmo()

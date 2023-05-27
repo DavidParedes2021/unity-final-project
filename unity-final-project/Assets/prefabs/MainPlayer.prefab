@@ -224,6 +224,7 @@ MonoBehaviour:
   - {fileID: 7884444562145169586, guid: c46c0c67a5d66324bb356ee243ffa3ae, type: 3}
   - {fileID: 7606120223683746624, guid: 4974097070017f14b9da0c81a652621d, type: 3}
   - {fileID: 2363138875218807946, guid: 5f643028ab2c3a449b8ec7aed44649fc, type: 3}
+  - {fileID: 3619349866178310677, guid: 42c8f5bb63795c544b6b49b203a77cf8, type: 3}
   Consumables: []
   EventController: {fileID: 0}
   fov: 60

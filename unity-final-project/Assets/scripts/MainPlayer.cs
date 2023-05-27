@@ -146,7 +146,7 @@ public class MainPlayer : Player
 
         if (_isShooting && CurrentWeapon != null)
         {
-            CurrentWeapon.Trigger(gameObject,transform.position+3*transform.forward,GetLookingDirection());
+            CurrentWeapon.Trigger(gameObject,_agentController.GetCamera().transform.position+_agentController.GetCamera().transform.forward,GetLookingDirection());
         }
         if (Input.GetMouseButtonUp(0))
         {

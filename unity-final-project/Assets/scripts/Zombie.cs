@@ -44,7 +44,7 @@ public class Zombie : Player
         Vector3 directionToTarget = enemyObj.transform.position - transform.position;
 
         // Comprobamos si el objetivo está dentro del campo de visión del enemigo
-        if (Vector3.Angle(transform.forward, directionToTarget) < 45/*Field Of View*/ / 2f)
+        if (Vector3.Angle(transform.forward, directionToTarget) < 60/*Field Of View*/ / 2f)
         {
             // Comprobamos si no hay obstáculos entre el enemigo y el objetivo
             RaycastHit hit;
@@ -69,7 +69,7 @@ public class Zombie : Player
         if (_timeSinceLastObjSeen is >= 0 and < 5f)
         {
             transform.LookAt(enemyObj.transform);
-            if (Vector3.Distance(_agent.destination, transform.position)>=5f)
+            if (Math.Abs(((int)_timeSinceLastObjSeen) - _timeSinceLastObjSeen) < 0.05)
             {
                 _agent.destination = enemyObj.transform.position;
             }
