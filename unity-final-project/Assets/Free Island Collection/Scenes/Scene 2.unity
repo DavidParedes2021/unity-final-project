@@ -911,8 +911,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0033f64ac467b8e4ab3eb1e3e469e22b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winPanel: {fileID: 0}
-  endGamePanel: {fileID: 0}
+  winPanel: {fileID: 1090036231}
+  endGamePanel: {fileID: 1199768692}
   coordinatesText: {fileID: 1799123276}
   boatStateText: {fileID: 1167643521}
   currentWeaponImage: {fileID: 1269231095}
@@ -1817,6 +1817,8 @@ MonoBehaviour:
   endGame: {fileID: 8300000, guid: 7fe8d212b8f8d454ba6bd4240b761989, type: 3}
   winGame: {fileID: 8300000, guid: dcc469c949e95a04984e7ca5d01af213, type: 3}
   reload: {fileID: 8300000, guid: 6544478613a1715458d6a709c73c4d17, type: 3}
+  perkSound: {fileID: 8300000, guid: 6e032b672ead8ff4b8208ab77a06724d, type: 3}
+  breathingSound: {fileID: 8300000, guid: c234b79848c7789468a08b883ee8da8f, type: 3}
 --- !u!1 &1097072138
 GameObject:
   m_ObjectHideFlags: 0
