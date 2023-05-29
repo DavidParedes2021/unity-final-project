@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class Player : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public abstract class Player : MonoBehaviour
     public Weapon CurrentWeapon { set; get; }
     public List<Weapon> Weapons = new List<Weapon>();
     public List<Consumable> Consumables = new List<Consumable>();
-    public EventController EventController;
+    [FormerlySerializedAs("EC")] public EC EC;
     protected int MaxConsumablesAmount = 4;
     protected virtual void Awake()
     {
@@ -36,9 +37,12 @@ public abstract class Player : MonoBehaviour
             var instantiatedConsumable = Instantiate(consumable);
             AddConsumable(instantiatedConsumable);
         }
+        Life = maxLife;
+        Stamina = maxStamina;
     }
     public void SwitchToNextWeapon()
     {
+        if (WaitUntilReloadReleased()) return;
         if (Weapons.Count == 0)
         {
             return;
@@ -51,6 +55,7 @@ public abstract class Player : MonoBehaviour
 
     public void SwitchToPreviousWeapon()
     {
+        if (WaitUntilReloadReleased()) return;
         if (Weapons.Count == 0)
         {
             return;
@@ -65,7 +70,18 @@ public abstract class Player : MonoBehaviour
         CurrentWeapon = Weapons[previousIndex];
     }
 
-    public virtual void attachToEventControlelr(EventController controller)
+
+    private bool WaitUntilReloadReleased()
+    {
+        if (CurrentWeapon.isReloading())
+        {
+            EC.notifyEvent(EC.NotificationType.ScreenMessage, "Espera a terminar recarga", 1f);
+            return true;
+        }
+
+        return false;
+    }
+    public virtual void attachToEventControlelr(EC controller)
     {
         foreach (var weapon in Weapons)
         {
@@ -77,7 +93,7 @@ public abstract class Player : MonoBehaviour
             consumable.AttachToEventController(controller);
         }
 
-        this.EventController = controller;
+        this.EC = controller;
     }
 
     public bool AddConsumable(Consumable consumable)
@@ -163,7 +179,7 @@ public abstract class Player : MonoBehaviour
         Life -= damage;
         if (Life < 0)
         {
-            EventController.DestroyItem(this);
+            EC.DestroyItem(this);
         }
     }
     public double GetStaminaPercentage()

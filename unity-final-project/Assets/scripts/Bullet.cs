@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     public int damage;
     private Rigidbody _rigidbody;
     public GameObject ownerGO;
+    public GameObject targetGO;
     public float destroyAfter { get; set; } = 5;
 
     private void Awake()
@@ -25,6 +26,9 @@ public class Bullet : MonoBehaviour
     public void CollideWithPlayer(Player player)
     {
         if (player.gameObject == ownerGO)
+        {
+            return;
+        }else if (targetGO != null && targetGO != player.gameObject)
         {
             return;
         }

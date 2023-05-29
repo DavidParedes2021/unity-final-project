@@ -8,12 +8,12 @@ public abstract class PickableObject : MonoBehaviour
         
     }
 
-    public void AttachToEventController(EventController otherEventController)
+    public void AttachToEventController(EC otherEc)
     {
-        this.EventController = otherEventController;
+        this.Ec = otherEc;
     }
 
-    public EventController EventController { get; set; }
+    public EC Ec { get; set; }
     private string _objectName;
     public abstract void PickUp(Player player);
 }

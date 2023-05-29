@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Serialization;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
+using Slider = UnityEngine.UI.Slider;
 
 public class UIController : MonoBehaviour
 {
+    public GameObject winPanel;
+    public GameObject endGamePanel;
     public TextMeshProUGUI coordinatesText;
     public TextMeshProUGUI boatStateText;
     public Image currentWeaponImage;
@@ -18,7 +23,7 @@ public class UIController : MonoBehaviour
     public Compass Compass;
     public MinimapController MinimapController;
     public TextMeshProUGUI messageText;
-    public EventController eventController;
+    [FormerlySerializedAs("eventController")] public EC ec;
     public Image zoomImage;
     private MainPlayer _mainPlayer;
     private int maxInventorySlots = 4;
@@ -31,7 +36,7 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
-        _mainPlayer = eventController.MainPlayer;
+        _mainPlayer = ec.MainPlayer;
     }
 
     // Update is called once per frame

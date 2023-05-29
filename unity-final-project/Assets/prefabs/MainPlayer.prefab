@@ -229,7 +229,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1
+  m_Radius: 2
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c451bc7d4abf4d749f11637a1f949fda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxStamina: 0
-  maxLife: 0
+  maxStamina: 100
+  maxLife: 100
   staminaLossRatePerSecond: 15
   staminaRecoverRatePerSecond: 5
   lifeRecoverRatePerSecond: 5
@@ -258,5 +258,5 @@ MonoBehaviour:
   - {fileID: 7626056639443461579, guid: 984f82ad0a038214d9df46fc632a1f77, type: 3}
   - {fileID: 7450132299247667511, guid: 02de326017f7207439f811b56eb723ec, type: 3}
   Consumables: []
-  EventController: {fileID: 0}
+  EC: {fileID: 0}
   fov: 60

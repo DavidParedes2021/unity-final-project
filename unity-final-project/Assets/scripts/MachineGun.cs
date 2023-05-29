@@ -33,10 +33,11 @@ public class MachineGun : Weapon
         if (remainingFireRate >= fireRate) {
             var resultUseAmmo = ammunition.Use(1);
             if (resultUseAmmo.Length != 0) {//Error
-                EventController.notifyEvent(EventController.NotificationType.ScreenMessage,resultUseAmmo);
+                Ec.notifyEvent(EC.NotificationType.ScreenMessage,resultUseAmmo);
                 return;
             } 
             remainingFireRate = 0;
+            playSoundShoot();
             StartFireBurst(fireRate/burstCount,owner,position,direction);
         }
     }

@@ -17,11 +17,11 @@ public class Sniper : Gun
     public override void ZoomIn(Camera camera)
     {
         base.ZoomIn(camera);
-        EventController.UIController.setZoomImage(zoomImage);
+        Ec.UIController.setZoomImage(zoomImage);
     }
     public override void ZoomOut(Camera camera)
     {
         base.ZoomOut(camera);
-        EventController.UIController.setZoomImage(null);
+        Ec.UIController.setZoomImage(null);
     }
 }

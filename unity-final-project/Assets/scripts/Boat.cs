@@ -24,9 +24,9 @@ public class Boat : MonoBehaviour
             timeSinceLastMessage = 0;
             if (mainPlayer.HasAllBoatParts())
             {
-                mainPlayer.EventController.notifyEvent(EventController.NotificationType.ScreenMessage,"Presiona P para reparar el bote",3f);
+                mainPlayer.EC.notifyEvent(EC.NotificationType.ScreenMessage,"Presiona P para reparar el bote",3f);
             }else {
-                mainPlayer.EventController.notifyEvent(EventController.NotificationType.ScreenMessage,"No has reunido todas las partes del bote",3f);
+                mainPlayer.EC.notifyEvent(EC.NotificationType.ScreenMessage,"No has reunido todas las partes del bote",3f);
             }
         }
 
@@ -35,7 +35,7 @@ public class Boat : MonoBehaviour
             {
                 isRepaired = true;
             }else {
-                mainPlayer.EventController.notifyEvent(EventController.NotificationType.ScreenMessage,"No has reunido todas las partes del bote");
+                mainPlayer.EC.notifyEvent(EC.NotificationType.ScreenMessage,"No has reunido todas las partes del bote");
             }
         }
     }

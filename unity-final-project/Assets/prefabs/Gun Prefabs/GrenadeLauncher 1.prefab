@@ -77,19 +77,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1615cbd68bab45dc8836c38d3239f417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxPrefab: {fileID: 1240534969081247837, guid: 42c8f5bb63795c544b6b49b203a77cf8, type: 3}
-  inGamePrefab: {fileID: 0}
-  bulletVelocity: 20
+  bulletVelocity: 10
   weaponImage: {fileID: 21300000, guid: ef1e8c29df88a904ab1d4b0329189be8, type: 3}
-  damage: 1
+  damage: 30
   fireRate: 0.5
   remainingFireRate: 0
   ammunition: {fileID: 5966416692598429437, guid: 5ca8081b9602e7e4b802c48615dcc06e, type: 3}
   zoomFactor: 1.17
   isZoomed: 0
-  reloadTime: 6
+  reloadTime: 5
+  shootSound: {fileID: 8300000, guid: 16c8e4aed57e93c4d8e54a92a62e8f47, type: 3}
   initialAmmoCount: 3
-  _secondsToBam: 4
+  _secondsToBam: 3
+  explosionClip: {fileID: 8300000, guid: 87b90716a7d9ed04bac3db42c34a455d, type: 3}
 --- !u!1 &2452143664566540569
 GameObject:
   m_ObjectHideFlags: 0

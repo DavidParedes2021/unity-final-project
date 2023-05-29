@@ -21,7 +21,7 @@ public class ShotGun : Weapon
         if (remainingFireRate >= fireRate) {
             var resultUseAmmo = ammunition.Use(1);
             if (resultUseAmmo.Length != 0) {//Error
-                EventController.notifyEvent(EventController.NotificationType.ScreenMessage,resultUseAmmo);
+                Ec.notifyEvent(EC.NotificationType.ScreenMessage,resultUseAmmo);
                 return;
             } 
             remainingFireRate = 0;
@@ -29,6 +29,7 @@ public class ShotGun : Weapon
             // Shoot bullets rapidly
             // Spread the bullets
             // Spread the bullets
+            playSoundShoot();
             for (int i = 0; i < pelletCount; i++)
             {
                 // Calculate random spread within the defined angle range

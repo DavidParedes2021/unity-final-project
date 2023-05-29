@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class Zombie : Player
 {
@@ -8,10 +11,13 @@ public class Zombie : Player
     private float _timeSinceLastObjSeen;
     private GameObject enemyObj;
     public Vector3 _randomTerrainPosition;
-
+    private AudioSource zombieMainAudioSource;
+    private bool hasRandomDestination = false;
     protected override void Awake()
     {
+        Weapons = new List<Weapon>() { new GameObject().AddComponent<ZombieAcid>()};
         base.Awake();
+        zombieMainAudioSource = SoundsManager.GetNewASC(this.gameObject);
         CollidableObject.AttachToScript(this.gameObject,nameof(Zombie));
         
         _agent = U.GetOrAddComponent<NavMeshAgent>(gameObject);
@@ -23,15 +29,32 @@ public class Zombie : Player
 
     private void Start()
     {
-        if (EventController == null)
+        if (EC == null)
         {
-            Debug.LogError("The zombie need a reference to an EventController to define trajectory, etc.");
+            Debug.LogError("The zombie need a reference to an EC to define trajectory, etc.");
         }
-
-        enemyObj = EventController.MainPlayer.gameObject;
+        zombieMainAudioSource.clip = U.RandomElement(EC.RM.SM.zombieNearAudios);
+        zombieMainAudioSource.loop = true;
+        zombieMainAudioSource.volume = 0.5f;
+        zombieMainAudioSource.spatialBlend = 1f;
+        zombieMainAudioSource.spread = 180;
+        zombieMainAudioSource.maxDistance = 15f;
+        enemyObj = EC.MainPlayer.gameObject;
+        StartCoroutine(PlayZombieSounds());
         GetRandomDestination();
     }
 
+    private IEnumerator PlayZombieSounds()
+    {
+        while (true)
+        {
+            var clipLength = zombieMainAudioSource.clip.length;
+            zombieMainAudioSource.Play();
+            yield return new WaitForSeconds(clipLength);
+            zombieMainAudioSource.Stop();
+            yield return new WaitForSeconds(Random.Range(10f,60f));
+        }
+    }
     private void Update()
     {
         MoveInPath();
@@ -50,17 +73,17 @@ public class Zombie : Player
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToTarget, out hit))
             {
-                if (hit.transform == enemyObj.transform)
-                {
+                zombieMainAudioSource.PlayOneShot(U.RandomElement(EC.RM.SM.zombieInSightOfPlayer));
+                if (hit.transform == enemyObj.transform) {
                     // El objetivo está a la vista del enemigo
                     _timeSinceLastObjSeen = 0;
                 }
             }
-        }else
-        {
-            // El objetivo está fuera del campo de visión del enemigo
+            if (Vector3.Distance(_agent.destination, enemyObj.transform.position) <= 4f)
+            {
+                TriggerCurrentWeapon();
+            }
         }
-
     }
 
     private void MoveInPath()
@@ -69,40 +92,35 @@ public class Zombie : Player
         if (_timeSinceLastObjSeen is >= 0 and < 5f)
         {
             transform.LookAt(enemyObj.transform);
-            if (Math.Abs(((int)_timeSinceLastObjSeen) - _timeSinceLastObjSeen) < 0.05)
+            if ((int)(_timeSinceLastObjSeen)%2==0)
             {
+                _agent.speed = (float)WalkVelocity;
                 _agent.destination = enemyObj.transform.position;
+                hasRandomDestination = false;
             }
         }
         else
         {
-            if (_agent.destination == enemyObj.transform.position)
-            {
+            if (!hasRandomDestination) {
                 GetRandomDestination();
             }
         }
-        if(_agent.destination!=enemyObj.transform.position)//Move to Random Place
+        if(hasRandomDestination)//Move to Random Place
         {
-            if (Vector3.Distance(_agent.destination, transform.position)<=2f) {
+            if (Vector3.Distance(_agent.destination, transform.position)<=10f) {
            
                 GetRandomDestination();
-            }
-        }
-        else
-        {
-            if (Vector3.Distance(_agent.destination, transform.position) <= 2f)//Move to Obj
-            {
-                //Atack?
             }
         }
     }
 
     private void GetRandomDestination()
     {
-        _randomTerrainPosition = EventController.GetRandomTerrainPosition(minElevation: 25);
+        _randomTerrainPosition = EC.GetRandomTerrainPosition(minElevation: 25);
         
         _agent.destination = new Vector3(_randomTerrainPosition.x,_randomTerrainPosition.y+1,_randomTerrainPosition.z);
         _agent.speed = (float)WalkVelocity;
+        hasRandomDestination = true;
     }
 
 
@@ -121,13 +139,15 @@ public class Zombie : Player
         throw new System.NotImplementedException();
     }
 
-    public override bool AddWeapon(Weapon weapon)
-    {
-        throw new System.NotImplementedException();
-    }
 
     public void Attack(MainPlayer otherMainPlayer)
     {
-        
+        TriggerCurrentWeapon();
+        SoundsManager.PlayClipAndDestroy( this.gameObject,U.RandomElement(EC.RM.SM.zombieAttacking));
+    }
+
+    private void TriggerCurrentWeapon()
+    {
+        CurrentWeapon.Trigger(this.gameObject, this.transform.position, this.transform.forward);
     }
 }

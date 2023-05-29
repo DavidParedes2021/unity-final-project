@@ -23,6 +23,7 @@ public class ResourcesManager:MonoBehaviour
     public GameObject propellerBoatPartPrefab;
     public GameObject gasolineBoatPartPrefab;
     public GameObject boatPrefab;
+    [FormerlySerializedAs("SoundsManager")] public SoundsManager SM;
     
     [FormerlySerializedAs("food")] public GameObject foodPrefab;
     [FormerlySerializedAs("water")] public GameObject waterPrefab;

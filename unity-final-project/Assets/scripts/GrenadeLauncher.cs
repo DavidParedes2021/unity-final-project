@@ -7,7 +7,8 @@ public class GrenadeLauncher : Weapon
 {
     public int initialAmmoCount=3;
     public float _secondsToBam;
-
+    public AudioClip explosionClip;
+    public int damageInPerksExplosion;
     protected override void DefineInitialState(Ammunition ammunitionToSetUp)
     {
         ammunitionToSetUp.MaxBulletsInCannon = 3;
@@ -20,7 +21,7 @@ public class GrenadeLauncher : Weapon
         if (remainingFireRate >= fireRate) {
             var resultUseAmmo = ammunition.Use(1);
             if (resultUseAmmo.Length != 0) {//Error
-                EventController.notifyEvent(EventController.NotificationType.ScreenMessage,resultUseAmmo);
+                Ec.notifyEvent(EC.NotificationType.ScreenMessage,resultUseAmmo);
                 return;
             } 
             remainingFireRate = 0;
@@ -28,6 +29,7 @@ public class GrenadeLauncher : Weapon
             var granadeBullet = FireBullet(owner, position, direction);
             bulletVelocity /= 2;
             granadeBullet.destroyAfter = _secondsToBam;
+            playSoundShoot();
             StartCoroutine(ShootBulletsAfterDelay(granadeBullet));
         }
     }
@@ -47,10 +49,12 @@ public class GrenadeLauncher : Weapon
         {
             lastPosition = granadeBullet.transform.position;
         }
-        for (int i = 0; i < 200; i++)
+        playSoundShoot(explosionClip);
+        for (int i = 0; i < 150; i++)
         {
             Vector3 randomDirection = UnityEngine.Random.insideUnitSphere;
-            FireBullet(null, lastPosition, randomDirection);
+            var fireBullet = FireBullet(null, lastPosition, randomDirection);
+            fireBullet.damage = damageInPerksExplosion;
         }
     }
 }

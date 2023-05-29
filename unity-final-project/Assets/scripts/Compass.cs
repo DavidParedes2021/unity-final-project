@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class Compass : MonoBehaviour
@@ -14,7 +15,7 @@ public class Compass : MonoBehaviour
 	private Transform playerTransform;
 	private MainPlayer _mainPlayer;
 	public TextMeshProUGUI CompassDirectionText;
-	public EventController eventController;
+	[FormerlySerializedAs("eventController")] public EC ec;
 	private List<(GameObject,(Transform,TextMeshProUGUI, Color))> targets;
 	public static (int, Color)[] idColors = { (1, Color.black), (2, Color.red), (3, Color.yellow), (4, Color.blue) };
 
@@ -46,7 +47,7 @@ public class Compass : MonoBehaviour
 	}
 	private void Awake()
 	{
-		if (eventController == null)
+		if (ec == null)
 		{
 			Debug.LogError("To use Compass you need an EvenController set up!.");
 			return;
@@ -56,10 +57,10 @@ public class Compass : MonoBehaviour
 	private void Start()
 	{
 		gameObject.SetActive(true);
-		_mainPlayer = this.eventController.MainPlayer;
-		playerTransform = this.eventController.MainPlayer.transform;
+		_mainPlayer = this.ec.MainPlayer;
+		playerTransform = this.ec.MainPlayer.transform;
 		
-		List<RepairObject> repairObjects = eventController.RepairObjects;
+		List<RepairObject> repairObjects = ec.RepairObjects;
 		int sampleSize = (int)(repairObjects.Count * 0.1)+1;
 
 	}
@@ -83,7 +84,7 @@ public class Compass : MonoBehaviour
 
 	public void Update()
 	{
-		if (eventController == null)
+		if (ec == null)
 		{
 			gameObject.SetActive(false);
 		}
@@ -177,8 +178,37 @@ public class Compass : MonoBehaviour
 		}
 	}
 
+	public void RemoveTargets(Color type)
+	{
+		if (targets != null)
+		{
+			
+			var targetsToRemove = new List<(GameObject, (Transform, TextMeshProUGUI, Color))>();
+			for (var i = 0; i < targets.Count; i++)
+			{
+				if (targets[i].Item2.Item3 == type)
+				{
+					targetsToRemove.Add(targets[i]);
+					Destroy(targets[i].Item1.gameObject);
+				}
+			}
+			// Remove the targets that match the specified color from the 'targets' list
+			foreach (var targetToRemove in targetsToRemove)
+			{
+				targets.Remove(targetToRemove);
+			}
+		}
+    
+	}
+
 	public void RemoveTargets()
 	{
+		if (targets != null)
+		{
+			for (var i = 0; i < targets.Count; i++) {
+				Destroy(targets[i].Item1.gameObject);
+			}
+		}
 		targets?.RemoveRange(0,targets.Count);
 	}
 }

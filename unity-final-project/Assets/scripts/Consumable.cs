@@ -24,7 +24,7 @@ public class Consumable : PickableObject
     {
         if (player.AddConsumable(this))
         {
-           EventController.DestroyItem(this);
+           Ec.DestroyItem(this);
         }
     }
 

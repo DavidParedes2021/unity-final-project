@@ -23,7 +23,7 @@ public class Ammunition : PickableObject
     public override void PickUp(Player player)
     {
         player.AddAmmunition(this);
-        EventController.DestroyItem(this);
+        Ec.DestroyItem(this);
     }
 
     public bool MergeAmmunition(Ammunition otherAmmo)
@@ -61,10 +61,19 @@ public class Ammunition : PickableObject
         {
             return;
         }
-    
-        int bulletsToLoad = Mathf.Min(bulletsAmount, MaxBulletsInCannon - _currentBulletsInCannon);
+
+        int bulletsToLoad = BulletsToReload(bulletsAmount);
         _currentBulletsInCannon += bulletsToLoad;
         _ammoCount -= bulletsToLoad;
+    }
+
+    public int BulletsToLoadUntilFull()
+    {
+        return BulletsToReload(_ammoCount);
+    }
+    private int BulletsToReload(int ammoCount)
+    {
+        return Mathf.Min(ammoCount, MaxBulletsInCannon - _currentBulletsInCannon);
     }
     public void Reload()
     {

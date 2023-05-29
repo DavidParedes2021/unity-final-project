@@ -16,13 +16,12 @@ public abstract class Weapon : PickableObject{
     public double zoomFactor=1.1;
     public bool isZoomed = false;
     public float reloadTime = 3f;
+    public AudioClip shootSound;
+    private Coroutine _reloadCoroutine;
+
     private void Awake()
     {
         CollidableObject.AttachToScript(this.gameObject,nameof(Weapon));
-        if (weaponImage == null)
-        {
-            Debug.LogWarning("No weapon image setter for"+this);
-        }
         ammunition = U.GetOrAddComponent<Ammunition>(this.gameObject);
         DefineInitialState(ammunition);
     }
@@ -43,13 +42,26 @@ public abstract class Weapon : PickableObject{
 
     protected abstract void DefineInitialState(Ammunition ammunitionToSetUp);
 
-    public abstract void Trigger(GameObject owner,Vector3 position,Vector3 direction);
+    public virtual void Trigger(GameObject owner, Vector3 position, Vector3 direction) {
+        if (_reloadCoroutine != null)
+        {
+            Ec.notifyEvent(EC.NotificationType.ScreenMessage,"Espere a terminar la recarga",1f);
+        }
+    }
 
+    public void playSoundShoot(AudioClip sound) {
+        SoundsManager.PlayClipAndDestroy(this.gameObject,sound);
+    }
+    public void playSoundShoot()
+    {
+        SoundsManager.PlayClipAndDestroy(this.gameObject,shootSound);
+    }
+    
     public override void PickUp(Player player)
     {
         if (!player.AddWeapon(this))
         {
-            EventController.DestroyItem(this);
+            Ec.DestroyItem(this);
         }
     }
     public virtual void ZoomIn(Camera camera)
@@ -69,7 +81,7 @@ public abstract class Weapon : PickableObject{
     public Bullet FireBullet(GameObject owner,Vector3 position, Vector3 direction)
     {
         // Instantiate a new bullet from the bulletPrefab
-        GameObject bulletObject = Instantiate(EventController.ResourcesManager.bulletPrefab, position, Quaternion.identity);
+        GameObject bulletObject = Instantiate(Ec.RM.bulletPrefab, position, Quaternion.identity);
 
         // Get the Bullet component from the instantiated bullet object
         Bullet bullet = U.GetOrAddComponent<Bullet>(bulletObject);
@@ -119,20 +131,47 @@ public abstract class Weapon : PickableObject{
         return component;
     }
 
-    public void ReloadAmmo()
+    public void ReloadAmmo(bool messagesEnabled)
     {
         if (ammunition != null)
         {
-            StartCoroutine(ReloadCoroutine());
+            if (_reloadCoroutine == null)
+            {
+                _reloadCoroutine = StartCoroutine(ReloadCoroutine(messagesEnabled));
+            }
         }
     }
 
-    private IEnumerator ReloadCoroutine()
+    private IEnumerator ReloadCoroutine(bool messagesEnabled)
     {
-        // Wait for the reload time
-        yield return new WaitForSeconds(reloadTime);
-
+        if (messagesEnabled) {
+            Ec.notifyEvent(EC.NotificationType.ScreenMessage,"Reloading",reloadTime);
+            var bulletsToLoad = ammunition.BulletsToLoadUntilFull();
+            var reloadClip = Ec.RM.SM.reload;
+            var audioSource = SoundsManager.GetNewASC(Ec.MainPlayer.gameObject);
+            float remainingReloadTime = reloadTime;
+            var reloadInternalDelay = Math.Max(0.1f,reloadTime / bulletsToLoad);
+            for (int i = 0; i < bulletsToLoad; i++)
+            {
+                audioSource.Stop();
+                audioSource.PlayOneShot(reloadClip);
+                yield return new WaitForSeconds(reloadInternalDelay);
+                remainingReloadTime -= reloadInternalDelay;
+            }
+            remainingReloadTime = Math.Max(0.1f, remainingReloadTime);
+            yield return new WaitForSeconds(remainingReloadTime);
+            SoundsManager.ReleaseAS(audioSource);
+        } else
+        {
+            yield return new WaitForSeconds(reloadTime);
+        }
         // Reload the ammunition
         ammunition.Reload();
+        _reloadCoroutine = null;
+    }
+
+    public bool isReloading()
+    {
+        return _reloadCoroutine != null;
     }
 }

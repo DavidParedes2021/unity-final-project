@@ -52,7 +52,7 @@ public class RepairObject : PickableObject
         }
         else
         {
-            EventController.DestroyItem(this);
+            Ec.DestroyItem(this);
         }
 
     }

@@ -30,12 +30,9 @@ public class MainPlayer : Player
 
         _agentController = U.GetOrAddComponent<AgentController>(this.gameObject);
         
-        maxLife = 100;
-        Life = 100;
+        
         lifeRecoverRatePerSecond = (float)(maxLife * 0.03);//Recover 3% each second
         
-        maxStamina = 100;
-        Stamina = 100;
         staminaRecoverRatePerSecond = (float)(maxLife * 0.05);//Recover 5% each second
         staminaLossRatePerSecond = staminaRecoverRatePerSecond * 4;//Stamina reduced 15% each second;
 
@@ -67,6 +64,7 @@ public class MainPlayer : Player
 
             // Clamp the stamina value to the maximum
             Stamina = Mathf.Clamp((float)Stamina, float.MinValue,(float) maxStamina);
+            
             // Clamp the stamina value to the maximum
             Life = Mathf.Clamp((float)Life, -10,(float) maxLife);
 
@@ -76,8 +74,12 @@ public class MainPlayer : Player
     }
     private void ReduceStamina(float deltaTime)
     {
+        double previousStamina = Stamina;
         Stamina -= staminaLossRatePerSecond*deltaTime;
         Stamina = Mathf.Clamp((float)Stamina, -staminaLossRatePerSecond,(float) maxStamina);
+        if (previousStamina >= 0 && Stamina < 0) {
+            SoundsManager.PlayClipAndDestroy(this.gameObject,EC.RM.SM.breathingSound);
+        }
         if (Stamina <= 0)
         {
             Stamina = -3*staminaLossRatePerSecond;
@@ -89,7 +91,11 @@ public class MainPlayer : Player
     {
         return BoatParts.All(repairObject => repairObject.IsComplete());
     }
-    public override void attachToEventControlelr(EventController controller)
+    public List<RepairObject> ReturnCompletedBoatParts()
+    {
+        return BoatParts.Where(repairObject => repairObject.IsComplete()).ToList();
+    }
+    public override void attachToEventControlelr(EC controller)
     {
         base.attachToEventControlelr(controller);
         foreach (var repairObject in BoatParts)
@@ -103,7 +109,7 @@ public class MainPlayer : Player
         if (Math.Abs(_agentController.GetCamera().fieldOfView - fov) > 0.1 && !isZoomed)
         {
             _agentController.GetCamera().fieldOfView = fov;
-            EventController.UIController.setZoomImage(null);
+            EC.UIController.setZoomImage(null);
         }
         if (Stamina <= 0)
         {
@@ -117,14 +123,17 @@ public class MainPlayer : Player
         {
             if (CurrentWeapon != null)
             {
-                CurrentWeapon.ReloadAmmo();
+                CurrentWeapon.ReloadAmmo(true);
             }
         }
 
         for (int i = 0; i < MaxConsumablesAmount; i++) {
             if (Input.GetKeyUp(KeyCode.Alpha0 + i))
             {
-                UseConsumable(i-1);
+                if (UseConsumable(i - 1))
+                {
+                    SoundsManager.PlayClipAndDestroy(this.gameObject,EC.RM.SM.perkSound);
+                }
             }
         }
         // Handle weapon trigger input (Mouse Left Click)
@@ -172,7 +181,7 @@ public class MainPlayer : Player
     {
         isZoomed = false;
         _agentController.GetCamera().fieldOfView = fov;
-        EventController.UIController.setZoomImage(null);
+        EC.UIController.setZoomImage(null);
     }
 
     private Vector3 GetLookingDirection()
@@ -189,7 +198,6 @@ public class MainPlayer : Player
                 return true;
             }
         }
-
         BoatParts.Add(boatPart);
         return true;
     }

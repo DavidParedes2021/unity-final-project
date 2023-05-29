@@ -2,11 +2,12 @@
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MinimapController : MonoBehaviour
 {
-    public EventController eventController;
+    [FormerlySerializedAs("eventController")] public EC ec;
     private RectTransform _rectTransform;
     private Transform followTransform;
     private Camera minimapCamera;
@@ -19,11 +20,11 @@ public class MinimapController : MonoBehaviour
 
     void Start () {
        
-        StartMinimap(eventController,eventController.MainPlayer.transform);
+        StartMinimap(ec,ec.MainPlayer.transform);
     }
-    public void StartMinimap(EventController ec, Transform transformm)
+    public void StartMinimap(EC ec, Transform transformm)
     {
-        eventController = ec;
+        this.ec = ec;
         followTransform = transformm;
         followTransform = transformm;
         _rectTransform = gameObject.GetOrAddComponent<RectTransform>();
