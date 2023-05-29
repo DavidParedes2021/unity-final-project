@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class Weapon : PickableObject{
-    public GameObject weaponPrefab;
     public int bulletVelocity = 50;
     public Sprite weaponImage;
     public int damage;
@@ -24,7 +23,7 @@ public abstract class Weapon : PickableObject{
         {
             Debug.LogWarning("No weapon image setter for"+this);
         }
-        ammunition = weaponPrefab.GetOrAddComponent<Ammunition>();
+        ammunition = U.GetOrAddComponent<Ammunition>(this.gameObject);
         DefineInitialState(ammunition);
     }
 

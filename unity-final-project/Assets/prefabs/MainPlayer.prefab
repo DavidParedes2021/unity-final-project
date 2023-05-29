@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5660458925195022957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9119962528123994479}
+  m_Layer: 0
+  m_Name: WeaponPivotPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9119962528123994479
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660458925195022957}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.29, z: 0.484}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7749476190325500366}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7749476189632375288
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,6 +149,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7749476189632375289}
+  - {fileID: 9119962528123994479}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -220,11 +252,11 @@ MonoBehaviour:
   lifeRecoverRatePerSecond: 5
   WalkVelocity: 0
   Weapons:
-  - {fileID: -2040205073113380315, guid: ce74f20918093284fa7202f63bef5d46, type: 3}
-  - {fileID: 7884444562145169586, guid: c46c0c67a5d66324bb356ee243ffa3ae, type: 3}
-  - {fileID: 7606120223683746624, guid: 4974097070017f14b9da0c81a652621d, type: 3}
-  - {fileID: 2363138875218807946, guid: 5f643028ab2c3a449b8ec7aed44649fc, type: 3}
-  - {fileID: 3619349866178310677, guid: 42c8f5bb63795c544b6b49b203a77cf8, type: 3}
+  - {fileID: -1200404483955957712, guid: ee0844a7fc72fca4db313570390cc502, type: 3}
+  - {fileID: 4026880759091848922, guid: cc380fc997303cd4b9aa9cc6ac6e3e61, type: 3}
+  - {fileID: 2599791844927810026, guid: 0b3b7c9095787094dbc97658a946892e, type: 3}
+  - {fileID: 7626056639443461579, guid: 984f82ad0a038214d9df46fc632a1f77, type: 3}
+  - {fileID: 7450132299247667511, guid: 02de326017f7207439f811b56eb723ec, type: 3}
   Consumables: []
   EventController: {fileID: 0}
   fov: 60
