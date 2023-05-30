@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
@@ -8,8 +9,8 @@ using Random = UnityEngine.Random;
 
 public class ResourcesManager:MonoBehaviour
 {
+    public List<GameObject> zombiesPrefabs;
     public GameObject bulletPrefab;
-    public GameObject zombiePrefab;
     public Terrain currentTerrain;
     public GameObject mainPlayerPrefab;
     public GameObject machineGunPrefab;
@@ -29,6 +30,10 @@ public class ResourcesManager:MonoBehaviour
     [FormerlySerializedAs("water")] public GameObject waterPrefab;
     private List<GameObject> consumablesPrefabs;
 
+    public GameObject chooseRandomZombie()
+    {
+        return zombiesPrefabs[Random.Range(0, zombiesPrefabs.Count)];
+    }
     public GameObject chooseRandomWeapon()
     {
         if (_weapons == null || _weapons.Count==0) {

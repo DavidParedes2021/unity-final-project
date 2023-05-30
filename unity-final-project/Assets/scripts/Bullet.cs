@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -33,7 +34,7 @@ public class Bullet : MonoBehaviour
             return;
         }
         player.TakeDamage(this);
-        Destroy(this);
+        Destroy(this.gameObject);
     }
     public void CollideWithNothing()
     {

@@ -1004,7 +1004,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletVelocity: 40
   weaponImage: {fileID: 21300000, guid: e8dbcef8785a2f9449178832cb80d4f7, type: 3}
-  damage: 10
+  damage: 25
   fireRate: 1
   remainingFireRate: 0
   ammunition: {fileID: 5966416692598429437, guid: 5ca8081b9602e7e4b802c48615dcc06e, type: 3}

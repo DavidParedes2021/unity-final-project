@@ -189,7 +189,7 @@ public class Compass : MonoBehaviour
 				if (targets[i].Item2.Item3 == type)
 				{
 					targetsToRemove.Add(targets[i]);
-					Destroy(targets[i].Item1.gameObject);
+					Destroy(targets[i].Item1);
 				}
 			}
 			// Remove the targets that match the specified color from the 'targets' list

@@ -48,9 +48,9 @@ public class CollidableObject : MonoBehaviour
             {
                 otherAmmunition.PickUp(thisMainPlayer);
             }
-            else if (otherMainPlayer != null && thisZombiePlayer != null)
+            else if (otherZombiePlayer != null && thisMainPlayer != null)
             {
-                thisZombiePlayer.Attack(otherMainPlayer);
+                otherZombiePlayer.Attack(thisMainPlayer);
             }
             else if (otherBullet != null && thisZombiePlayer != null)
             {

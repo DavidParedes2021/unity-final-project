@@ -234,28 +234,29 @@ public class EC : MonoBehaviour
         private void SpawnZombie()
         {
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,lowerLimitDistance:100,minElevation:35);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,lowerLimitDistance:100,upperLimitDistance:900);
 
                 // Spawn the zombie at the random position
-                GameObject zombieObj = Instantiate(RM.zombiePrefab, randomPosition, Quaternion.identity);
+                GameObject zombieObj = Instantiate(RM.chooseRandomZombie(), randomPosition, Quaternion.identity);
                 Zombie zombie = U.GetOrAddComponent<Zombie>(zombieObj);
                 zombie.attachToEventControlelr(this);
                 Zombies.Add(zombie);
         }
 
         public Vector3 GetRandomTerrainPosition(Vector3 centralPosition = default,
-                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f,float maxElevation = 100f)
+                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 1f,float maxElevation = 1000f)
         {
                 return GetRandomTerrainPosition(RM.currentTerrain,centralPosition, lowerLimitDistance, upperLimitDistance,
-                        minElevation);
+                        minElevation,maxElevation);
         }
 
         private static Vector3 GetRandomTerrainPosition(Terrain currentTerrain, Vector3 centralPosition = default,
-                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 5f, float maxElevation = 100f)
+                float lowerLimitDistance = 0f, float upperLimitDistance = float.MaxValue / 2, float minElevation = 1, float maxElevation = 1000f)
         {
                 Vector3 terrainSize = currentTerrain.terrainData.size;
                 float randomX, randomZ;
                 float terrainHeight = 0f;
+                float distance = 0;
 
                 // Loop until a suitable position is found
                 do
@@ -270,14 +271,10 @@ public class EC : MonoBehaviour
                         if (centralPosition != Vector3.zero)
                         {
                                 // Calculate the distance between randomPosition and centralPosition
-                                float distance = Vector3.Distance(new Vector3(randomX, 0f, randomZ), centralPosition);
-
-                                // Check if the distance is within the specified limits
-                                if (distance < lowerLimitDistance || distance > upperLimitDistance)
-                                        continue;
+                                distance = Vector3.Distance(new Vector3(randomX, 0f, randomZ), centralPosition);
                         }
 
-                } while (terrainHeight<maxElevation && terrainHeight > minElevation);
+                } while (lowerLimitDistance<=distance && distance<=upperLimitDistance && terrainHeight<maxElevation && terrainHeight > minElevation);
 
                 // Set the random position with the correct height
                 Vector3 randomPosition = new Vector3(randomX, terrainHeight+7, randomZ);
