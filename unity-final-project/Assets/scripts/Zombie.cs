@@ -15,7 +15,12 @@ public class Zombie : Player
     private bool hasRandomDestination = false;
     protected override void Awake()
     {
-        Weapons = new List<Weapon>() { new GameObject().AddComponent<ZombieAcid>()};
+        var zombieAcid = GetComponent<ZombieAcid>();
+        if (zombieAcid==null)
+        {
+            Debug.LogError("The zombie needs a reference to Zombie Acid");
+        }
+        CurrentWeapon = zombieAcid;
         base.Awake();
         zombieMainAudioSource = SoundsManager.GetNewASC(this.gameObject);
         CollidableObject.AttachToScript(this.gameObject,nameof(Zombie));
@@ -33,6 +38,7 @@ public class Zombie : Player
         {
             Debug.LogError("The zombie need a reference to an EC to define trajectory, etc.");
         }
+        CurrentWeapon.AttachToEventController(EC);
         zombieMainAudioSource.clip = U.RandomElement(EC.RM.SM.zombieNearAudios);
         zombieMainAudioSource.loop = true;
         zombieMainAudioSource.volume = 0.5f;
@@ -79,7 +85,7 @@ public class Zombie : Player
                     _timeSinceLastObjSeen = 0;
                 }
             }
-            if (Vector3.Distance(_agent.destination, enemyObj.transform.position) <= 4f)
+            if (Vector3.Distance(_agent.destination, enemyObj.transform.position) <= 6f)
             {
                 TriggerCurrentWeapon();
             }

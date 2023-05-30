@@ -9,6 +9,8 @@ public class ZombieAcid : Weapon
     public int initialAmmoCount;
     public float _secondsToBam;
     public float spreadAngle;
+    public float acidCount;
+    public float damageInPerk;
     protected override void DefineInitialState(Ammunition ammunitionToSetUp)
     {
         ammunitionToSetUp.MaxBulletsInCannon = 2;
@@ -25,12 +27,15 @@ public class ZombieAcid : Weapon
                 return;
             } 
             remainingFireRate = 0;
-            bulletVelocity *= 2;
-            var granadeBullet = FireBullet(owner, position, direction);
-            bulletVelocity /= 2;
-            granadeBullet.destroyAfter = _secondsToBam;
-            playSoundShoot();
-            StartCoroutine(ShootBulletsAfterDelay(granadeBullet));
+            for (int i = 0; i < acidCount; i++)
+            {
+                bulletVelocity *= 2;
+                var granadeBullet = FireBullet(owner, position, direction);
+                bulletVelocity /= 2;
+                granadeBullet.destroyAfter = _secondsToBam;
+                playSoundShoot();
+                StartCoroutine(ShootBulletsAfterDelay(granadeBullet));
+            }
         }
     }
 
@@ -57,6 +62,7 @@ public class ZombieAcid : Weapon
             // Modify the look direction based on the spread rotation
             Vector3 modifiedLookDirection = spreadRotation * gameObject.transform.forward;
             var bullet = FireBullet(null, lastPosition, modifiedLookDirection);
+            bullet.damage = (int)damageInPerk;
             bullet.targetGO = Ec.MainPlayer.gameObject;
         }
     }

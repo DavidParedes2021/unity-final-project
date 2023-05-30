@@ -112,6 +112,7 @@ GameObject:
   - component: {fileID: 7490154220739172324}
   - component: {fileID: 2752696116838819632}
   - component: {fileID: 3973541297154561489}
+  - component: {fileID: 3053676319602819828}
   m_Layer: 2
   m_Name: Zombie
   m_TagString: Untagged
@@ -220,7 +221,7 @@ MonoBehaviour:
   WalkVelocity: 8
   Weapons: []
   Consumables: []
-  EventController: {fileID: 0}
+  EC: {fileID: 0}
   _randomTerrainPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &2752696116838819632
 Rigidbody:
@@ -260,6 +261,33 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &3053676319602819828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3920935554513503479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327d939e47d844ecacc28e44d976bbc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletVelocity: 18
+  weaponImage: {fileID: 21300000, guid: 7e9e17dc95f3393499e75175484daf2c, type: 3}
+  damage: 11
+  fireRate: 4
+  remainingFireRate: 0
+  ammunition: {fileID: 5966416692598429437, guid: 5ca8081b9602e7e4b802c48615dcc06e, type: 3}
+  zoomFactor: 1.1
+  isZoomed: 0
+  reloadTime: 4
+  shootSound: {fileID: 8300000, guid: b9664a7a89a2f374ab2c48b711bf0383, type: 3}
+  initialAmmoCount: 3
+  _secondsToBam: 3
+  spreadAngle: 20
+  acidCount: 3
+  damageInPerk: 3
 --- !u!1 &8174472440809229019
 GameObject:
   m_ObjectHideFlags: 0
