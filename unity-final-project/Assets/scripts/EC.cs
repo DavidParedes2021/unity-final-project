@@ -73,12 +73,12 @@ public class EC : MonoBehaviour
                 {
                         missionStatus = FindBoatPartsStatus;  
                         RequireTargetsForCompass(UIController.Compass);
-                        notifyEvent(NotificationType.ScreenMessage,"Encuentra las piezas del barco!");
+                        notifyEvent(NotificationType.ScreenMessage,"Encuentra las piezas del submarino (Marcas Rojas,Azules,Verdes)!");
                 }else if (MainPlayer.HasAllBoatParts() && missionStatus==FindBoatPartsStatus)
                 {
                         missionStatus = RepairBoatStatus;
                         RequireTargetsForCompass(UIController.Compass);
-                        notifyEvent(NotificationType.ScreenMessage,"Encuentra el barco y reparalo!");
+                        notifyEvent(NotificationType.ScreenMessage,"Encuentra el submarino y reparalo (Marca Negra)!");
                 }else if (Boat.IsRepaired()) {
                         WinGame();
                 }
@@ -113,7 +113,7 @@ public class EC : MonoBehaviour
                         SpawnWeapon();
                 }
                 
-                for (int i = 0; i < 50; i++)
+                for (int i = 0; i < 250; i++)
                 {
                         SpawnConsumables();
                 }
@@ -135,7 +135,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnBoat()
         {
-                Vector3 randomBoatPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:1000f);
+                Vector3 randomBoatPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,minElevation:45,maxElevation:65);
                 var boatInstantiated = Instantiate(RM.boatPrefab, randomBoatPosition, Quaternion.identity);
                 var boat = Boat.requireBoatScript(boatInstantiated);
                 this.Boat = boat;
@@ -148,7 +148,7 @@ public class EC : MonoBehaviour
                 Consumable.RequireConsumable(prefab);
                 
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,minElevation:60);
 
                 // Spawn the repair object at the random position
                 GameObject instConsumable = Instantiate(prefab, randomPosition, Quaternion.identity);
@@ -165,7 +165,7 @@ public class EC : MonoBehaviour
                 RepairObject.RequireRepairObject(prefab);
                 
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,lowerLimitDistance:150,upperLimitDistance:900);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,minElevation:60,lowerLimitDistance:1,upperLimitDistance:1500);
 
                 // Spawn the repair object at the random position
                 GameObject repairObj = Instantiate(prefab, randomPosition, Quaternion.identity);
@@ -190,7 +190,7 @@ public class EC : MonoBehaviour
 
         private void SpawnMainPlayer()
         {
-                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain);
+                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain,minElevation:60f);
                 GameObject mainPlayerPrefab = RM.mainPlayerPrefab;
 
                 GameObject mainPlayerObj = Instantiate(mainPlayerPrefab, randomTerrainPosition, Quaternion.identity);
@@ -200,7 +200,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnAmmunition()
         {
-                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain);
+                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain,minElevation:80);
                 GameObject ammunitionPrefab = RM.ammunitionPrefab;
 
                 GameObject ammunitionGo = Instantiate(ammunitionPrefab, randomTerrainPosition, Quaternion.identity);
@@ -210,7 +210,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnWeapon()
         {
-                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain);
+                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain,minElevation:80);
                 GameObject weaponPrefab = RM.chooseRandomWeapon();
 
                 GameObject weaponGo = Instantiate(weaponPrefab, randomTerrainPosition, Quaternion.identity);
@@ -234,7 +234,7 @@ public class EC : MonoBehaviour
         private void SpawnZombie()
         {
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:200);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:800);
 
                 // Spawn the zombie at the random position
                 GameObject zombieObj = Instantiate(RM.chooseRandomZombie(), randomPosition, Quaternion.identity);
@@ -263,7 +263,7 @@ public class EC : MonoBehaviour
                 float randomX, randomZ;
                 float terrainHeight = 0f;
                 float distance = 0;
-                int maxTries=500;
+                int maxTries=600;
                 // Loop until a suitable position is found
                 do
                 {

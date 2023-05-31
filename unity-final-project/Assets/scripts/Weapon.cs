@@ -151,7 +151,7 @@ public abstract class Weapon : PickableObject{
             var audioSource = SoundsManager.GetNewASC(Ec.MainPlayer.gameObject);
             float remainingReloadTime = reloadTime;
             var reloadInternalDelay = Math.Max(0.5f,reloadTime / bulletsToLoad);
-            for (int i = 0; i < bulletsToLoad; i++)
+            for (int i = 0; i < bulletsToLoad && remainingReloadTime>0; i++)
             {
                 audioSource.Stop();
                 audioSource.PlayOneShot(reloadClip);

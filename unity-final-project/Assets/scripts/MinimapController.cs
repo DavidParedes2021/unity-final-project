@@ -33,9 +33,9 @@ public class MinimapController : MonoBehaviour
         minimapCamera.orthographic = true;
         minimapCamera.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
         minimapCamera.orthographicSize = 9.0f;
-        minimapCamera.transform.position = new Vector3(0f, 80f, 0f);
+        minimapCamera.transform.position = new Vector3(0f, followTransform.position.y+40f, 0f);
 
-        minimapCamera.transform.SetParent(transform);
+        minimapCamera.transform.SetParent(followTransform);
 
 
         // Create the minimapRenderTexture

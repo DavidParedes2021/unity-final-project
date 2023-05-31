@@ -19,7 +19,7 @@ public class Boat : MonoBehaviour
     private void Update()
     {
         timeSinceLastMessage += Time.deltaTime;
-        if (Vector3.Distance(mainPlayer.transform.position, transform.position) < 5 && timeSinceLastMessage>10)
+        if (Vector3.Distance(mainPlayer.transform.position, transform.position) < 20 && timeSinceLastMessage>10)
         {
             timeSinceLastMessage = 0;
             if (mainPlayer.HasAllBoatParts())

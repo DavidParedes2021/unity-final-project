@@ -19311,7 +19311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef7de625536544b899330789f315bc0d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletVelocity: 200
+  bulletVelocity: 100
   weaponImage: {fileID: 21300000, guid: 7e05628124569cc488217b222dc1d81c, type: 3}
   damage: 130
   fireRate: 0.5

@@ -9,11 +9,13 @@ public class Zombie : Player
 {
     private NavMeshAgent _agent;
     private float _timeSinceLastObjSeen;
+    private float _timeSinceLastUpdateEnemyPath;
     private GameObject enemyObj;
     public Vector3 _randomTerrainPosition;
     private AudioSource zombieMainAudioSource;
     private bool hasRandomDestination = false;
     public Animator animator;
+    public bool hasZombiePath;
     private static readonly int IdleNProperty = Animator.StringToHash("idle n");
     private static readonly int WalkNProperty = Animator.StringToHash("walk n");
     private static readonly int AttackNProperty = Animator.StringToHash("attack n");
@@ -54,13 +56,15 @@ public class Zombie : Player
             Destroy(gameObject);
             return;
         }
+
+        _timeSinceLastUpdateEnemyPath = 0;
         //_agent.updatePosition = false;
         CurrentWeapon.AttachToEventController(EC);
         zombieMainAudioSource.clip = U.RandomElement(EC.RM.SM.zombieNearAudios);
         zombieMainAudioSource.loop = true;
         zombieMainAudioSource.volume = 0.5f;
         zombieMainAudioSource.spatialBlend = 1f;
-        zombieMainAudioSource.spread = 180;
+        zombieMainAudioSource.spread = 360;
         zombieMainAudioSource.maxDistance = 15f;
         enemyObj = EC.MainPlayer.gameObject;
         StartCoroutine(PlayZombieSounds());
@@ -94,7 +98,14 @@ public class Zombie : Player
         var maxIdleN = 2;
         var maxWalkN = 3;
         var maxAttackN = 2;
-        while (true) {
+        while (true)
+        {
+            var currentAnimatorStateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (currentAnimatorStateInfo.normalizedTime >= 1f)
+            {
+                animator.Play("Zombie Slow Walk");
+                yield return new WaitForSeconds(0.1f);
+            }
             animator.SetInteger(WalkNProperty,Random.Range(0,maxWalkN));
             animator.SetInteger(IdleNProperty,Random.Range(0,maxIdleN));
             animator.SetInteger(AttackNProperty,Random.Range(0,maxAttackN));
@@ -169,12 +180,21 @@ public class Zombie : Player
     private void MoveInPath()
     {
         _timeSinceLastObjSeen += Time.deltaTime;
+        _timeSinceLastUpdateEnemyPath += Time.deltaTime;
         if (isEnemyInVisibleRangeTime())
         {
             transform.LookAt(enemyObj.transform);
-            if (Vector3.Distance(_agent.destination, enemyObj.transform.position) > 5f) {
+            if (hasZombiePath == false) {
                 _agent.destination = enemyObj.transform.position;
-                hasRandomDestination = false;   
+                hasRandomDestination = false;
+                hasZombiePath = true;
+                _timeSinceLastUpdateEnemyPath = 0;
+            }
+            if (_timeSinceLastUpdateEnemyPath>1f + Random.Range(0.25f,0.5f) && Vector3.Distance(_agent.destination, enemyObj.transform.position) > 3f) {
+                _agent.destination = enemyObj.transform.position;
+                hasZombiePath = true;
+                hasRandomDestination = false;
+                _timeSinceLastUpdateEnemyPath = 0;;
             }
         }
         else
@@ -202,6 +222,7 @@ public class Zombie : Player
         _randomTerrainPosition = EC.GetRandomTerrainPosition(minElevation: 25);
         _agent.destination = new Vector3(_randomTerrainPosition.x,_randomTerrainPosition.y+1,_randomTerrainPosition.z);
         hasRandomDestination = true;
+        hasZombiePath = false;
     }
 
 
@@ -223,6 +244,7 @@ public class Zombie : Player
 
     public void Attack(MainPlayer otherMainPlayer)
     {
+        otherMainPlayer.TakeDamage(20f);
         TriggerCurrentWeapon();
         SoundsManager.PlayClipAndDestroy( this.gameObject,U.RandomElement(EC.RM.SM.zombieAttacking));
     }
