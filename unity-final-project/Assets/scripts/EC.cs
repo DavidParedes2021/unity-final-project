@@ -135,7 +135,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnBoat()
         {
-                Vector3 randomBoatPosition = GetRandomTerrainPosition(minElevation:5,maxElevation:20);
+                Vector3 randomBoatPosition = GetRandomTerrainPosition(minElevation:20);
                 var boatInstantiated = Instantiate(RM.boatPrefab, randomBoatPosition, Quaternion.identity);
                 var boat = Boat.requireBoatScript(boatInstantiated);
                 this.Boat = boat;
@@ -165,7 +165,7 @@ public class EC : MonoBehaviour
                 RepairObject.RequireRepairObject(prefab);
                 
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,lowerLimitDistance:150,upperLimitDistance:300);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,lowerLimitDistance:150,upperLimitDistance:900);
 
                 // Spawn the repair object at the random position
                 GameObject repairObj = Instantiate(prefab, randomPosition, Quaternion.identity);
@@ -200,7 +200,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnAmmunition()
         {
-                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain,lowerLimitDistance:10,upperLimitDistance:20);
+                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain);
                 GameObject ammunitionPrefab = RM.ammunitionPrefab;
 
                 GameObject ammunitionGo = Instantiate(ammunitionPrefab, randomTerrainPosition, Quaternion.identity);
@@ -210,7 +210,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnWeapon()
         {
-                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain,lowerLimitDistance:10,upperLimitDistance:20);
+                Vector3 randomTerrainPosition = GetRandomTerrainPosition(RM.currentTerrain);
                 GameObject weaponPrefab = RM.chooseRandomWeapon();
 
                 GameObject weaponGo = Instantiate(weaponPrefab, randomTerrainPosition, Quaternion.identity);
@@ -240,6 +240,12 @@ public class EC : MonoBehaviour
                 GameObject zombieObj = Instantiate(RM.chooseRandomZombie(), randomPosition, Quaternion.identity);
                 Zombie zombie = U.GetOrAddComponent<Zombie>(zombieObj);
                 zombie.attachToEventControlelr(this);
+                if (!zombie.GetAgent().isOnNavMesh)
+                {
+                        Debug.LogWarning("Cannot bound agent to NavMesh: Position:"+zombieObj.transform.position);
+                        Destroy(zombieObj);
+                        return;
+                }
                 Zombies.Add(zombie);
         }
 
@@ -257,7 +263,7 @@ public class EC : MonoBehaviour
                 float randomX, randomZ;
                 float terrainHeight = 0f;
                 float distance = 0;
-
+                int maxTries=100;
                 // Loop until a suitable position is found
                 do
                 {
@@ -267,6 +273,11 @@ public class EC : MonoBehaviour
                         // Get the height at the random position
                         terrainHeight = currentTerrain.SampleHeight(new Vector3(randomX, 0f, randomZ));
                         
+                        maxTries--;
+                        if (maxTries <= 0)
+                        {
+                                break;
+                        }
                         // Check if centralPosition is specified
                         if (centralPosition != Vector3.zero)
                         {
@@ -274,10 +285,11 @@ public class EC : MonoBehaviour
                                 distance = Vector3.Distance(new Vector3(randomX, 0f, randomZ), centralPosition);
                         }
 
-                } while (lowerLimitDistance<=distance && distance<=upperLimitDistance && terrainHeight<maxElevation && terrainHeight > minElevation);
+                } while (!(lowerLimitDistance <= distance && distance <= upperLimitDistance && terrainHeight >= minElevation && terrainHeight <= maxElevation));
+
 
                 // Set the random position with the correct height
-                Vector3 randomPosition = new Vector3(randomX, terrainHeight+7, randomZ);
+                Vector3 randomPosition = new Vector3(randomX, terrainHeight+1, randomZ);
 
                 return randomPosition;
         }

@@ -232,4 +232,9 @@ public class Zombie : Player
     {
         CurrentWeapon.Trigger(this.gameObject, this.transform.position, this.transform.forward);
     }
+
+    public NavMeshAgent GetAgent()
+    {
+        return _agent;
+    }
 }
