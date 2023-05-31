@@ -150,7 +150,7 @@ public abstract class Weapon : PickableObject{
             var reloadClip = Ec.RM.SM.reload;
             var audioSource = SoundsManager.GetNewASC(Ec.MainPlayer.gameObject);
             float remainingReloadTime = reloadTime;
-            var reloadInternalDelay = Math.Max(0.1f,reloadTime / bulletsToLoad);
+            var reloadInternalDelay = Math.Max(0.5f,reloadTime / bulletsToLoad);
             for (int i = 0; i < bulletsToLoad; i++)
             {
                 audioSource.Stop();

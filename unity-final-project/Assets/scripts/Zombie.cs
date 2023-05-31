@@ -54,7 +54,7 @@ public class Zombie : Player
             Destroy(gameObject);
             return;
         }
-        _agent.updatePosition = false;
+        //_agent.updatePosition = false;
         CurrentWeapon.AttachToEventController(EC);
         zombieMainAudioSource.clip = U.RandomElement(EC.RM.SM.zombieNearAudios);
         zombieMainAudioSource.loop = true;
@@ -70,7 +70,7 @@ public class Zombie : Player
     void OnAnimatorMove ()
     {
         // Update position to agent position
-        transform.position = _agent.nextPosition;
+        //transform.position = _agent.nextPosition;
     }
     private IEnumerator PlayZombieSounds()
     {
@@ -172,10 +172,9 @@ public class Zombie : Player
         if (isEnemyInVisibleRangeTime())
         {
             transform.LookAt(enemyObj.transform);
-            if ((int)(_timeSinceLastObjSeen)%3==0)
-            {
+            if (Vector3.Distance(_agent.destination, enemyObj.transform.position) > 5f) {
                 _agent.destination = enemyObj.transform.position;
-                hasRandomDestination = false;
+                hasRandomDestination = false;   
             }
         }
         else

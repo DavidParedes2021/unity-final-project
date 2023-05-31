@@ -1763,7 +1763,7 @@ MonoBehaviour:
   RepairObjects: []
   Ammunitions: []
   RM: {fileID: 1094073311}
-  maxZombies: 1000
+  maxZombies: 2
   spawnZombieRateInSeconds: 0.05
 --- !u!114 &1094073311
 MonoBehaviour:

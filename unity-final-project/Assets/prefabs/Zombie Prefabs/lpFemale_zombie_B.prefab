@@ -601,7 +601,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &2799852588129055246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,7 +671,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.7
-  m_BaseOffset: 0.5
+  m_BaseOffset: 0.1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!95 &6932735949658803059
@@ -687,7 +687,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: fee08d263277ffa41b7b5ae0a53d1d82, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -718,7 +718,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2684100731878148767}
   - component: {fileID: 2684100731864194047}
-  - component: {fileID: 4083732928539982533}
   m_Layer: 0
   m_Name: lpFemale_zombie_B
   m_TagString: Untagged
@@ -824,26 +823,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.09737593, y: -0.0024600178, z: 0.0000006556511}
     m_Extent: {x: 0.8494111, y: 0.2136246, z: 0.77610856}
   m_DirtyAABB: 0
---- !u!95 &4083732928539982533
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2684100731877791423}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 3bfb3033529133c4ba13c2b4cb506821, type: 3}
-  m_Controller: {fileID: 9100000, guid: fee08d263277ffa41b7b5ae0a53d1d82, type: 2}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &2684100731877791457
 GameObject:
   m_ObjectHideFlags: 0

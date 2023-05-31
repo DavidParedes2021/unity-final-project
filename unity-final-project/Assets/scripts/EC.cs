@@ -135,7 +135,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnBoat()
         {
-                Vector3 randomBoatPosition = GetRandomTerrainPosition(minElevation:20);
+                Vector3 randomBoatPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:1000f);
                 var boatInstantiated = Instantiate(RM.boatPrefab, randomBoatPosition, Quaternion.identity);
                 var boat = Boat.requireBoatScript(boatInstantiated);
                 this.Boat = boat;
@@ -234,7 +234,7 @@ public class EC : MonoBehaviour
         private void SpawnZombie()
         {
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,lowerLimitDistance:100,upperLimitDistance:900);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:200);
 
                 // Spawn the zombie at the random position
                 GameObject zombieObj = Instantiate(RM.chooseRandomZombie(), randomPosition, Quaternion.identity);
@@ -263,7 +263,7 @@ public class EC : MonoBehaviour
                 float randomX, randomZ;
                 float terrainHeight = 0f;
                 float distance = 0;
-                int maxTries=100;
+                int maxTries=500;
                 // Loop until a suitable position is found
                 do
                 {

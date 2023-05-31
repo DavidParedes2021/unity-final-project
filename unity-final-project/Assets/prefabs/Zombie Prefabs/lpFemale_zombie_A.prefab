@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1942277380415725278}
   - component: {fileID: 5258464961000063882}
+  - component: {fileID: 1738109747842181219}
   - component: {fileID: 5612406908016088519}
   - component: {fileID: 1720447028591213944}
   - component: {fileID: 4166338299152459978}
   - component: {fileID: 1685285193407095882}
-  - component: {fileID: 1738109747842181219}
   m_Layer: 0
   m_Name: lpFemale_zombie_A
   m_TagString: Untagged
@@ -52,7 +52,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: fee08d263277ffa41b7b5ae0a53d1d82, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
@@ -68,6 +68,29 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &1738109747842181219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942277380415619712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20850a03ba04464990ffbc58a7ac67f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxStamina: 10
+  maxLife: 100
+  staminaLossRatePerSecond: 15
+  staminaRecoverRatePerSecond: 5
+  lifeRecoverRatePerSecond: 5
+  WalkVelocity: 8
+  Weapons: []
+  Consumables: []
+  EC: {fileID: 0}
+  _randomTerrainPosition: {x: 0, y: 0, z: 0}
+  animator: {fileID: 5258464961000063882}
 --- !u!54 &5612406908016088519
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -83,7 +106,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &1720447028591213944
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -117,7 +140,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.7
-  m_BaseOffset: 0.5
+  m_BaseOffset: 0.1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &1685285193407095882
@@ -147,29 +170,6 @@ MonoBehaviour:
   spreadAngle: 20
   acidCount: 3
   damageInPerk: 0.1
---- !u!114 &1738109747842181219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942277380415619712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20850a03ba04464990ffbc58a7ac67f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxStamina: 10
-  maxLife: 100
-  staminaLossRatePerSecond: 15
-  staminaRecoverRatePerSecond: 5
-  lifeRecoverRatePerSecond: 5
-  WalkVelocity: 8
-  Weapons: []
-  Consumables: []
-  EC: {fileID: 0}
-  _randomTerrainPosition: {x: 0, y: 0, z: 0}
-  animator: {fileID: 5258464961000063882}
 --- !u!1 &1942277380415619714
 GameObject:
   m_ObjectHideFlags: 0
