@@ -91,6 +91,7 @@ MonoBehaviour:
   EC: {fileID: 0}
   _randomTerrainPosition: {x: 0, y: 0, z: 0}
   animator: {fileID: 5258464961000063882}
+  hasZombiePath: 0
 --- !u!54 &5612406908016088519
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -106,7 +107,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!136 &1720447028591213944
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -57,7 +57,7 @@ public class Zombie : Player
         }
 
         _timeSinceLastUpdateEnemyPath = 0;
-        //_agent.updatePosition = false;
+        _agent.updatePosition = false;
         CurrentWeapon.AttachToEventController(EC);
         zombieMainAudioSource.clip = U.RandomElement(EC.RM.SM.zombieNearAudios);
         zombieMainAudioSource.loop = true;
@@ -68,12 +68,13 @@ public class Zombie : Player
         enemyObj = EC.MainPlayer.gameObject;
         StartCoroutine(PlayZombieSounds());
         StartCoroutine(ShowAnimations());
+        StartCoroutine(MoveToPlayerCoroutine());
         GetRandomDestination();
     }
-    void OnAnimatorMove ()
+    void LateUpdate ()
     {
         // Update position to agent position
-        //transform.position = _agent.nextPosition;
+        transform.position = _agent.nextPosition;
     }
     private IEnumerator PlayZombieSounds()
     {
@@ -184,7 +185,7 @@ public class Zombie : Player
             hasRandomDestination = false;
             hasZombiePath = true;
             _timeSinceLastUpdateEnemyPath = 0;
-            yield return new WaitForSeconds(5 + Random.Range(-0.9f, 0.9f));
+            yield return new WaitForSeconds(2 + Random.Range(-0.9f, 0.9f));
         }
     }
 

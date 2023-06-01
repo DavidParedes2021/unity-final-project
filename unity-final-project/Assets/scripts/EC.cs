@@ -234,7 +234,7 @@ public class EC : MonoBehaviour
         private void SpawnZombie()
         {
                 // Get a random position on the terrain
-                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:80);
+                Vector3 randomPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,upperLimitDistance:300);
 
                 // Spawn the zombie at the random position
                 GameObject zombieObj = Instantiate(RM.chooseRandomZombie(), randomPosition, Quaternion.identity);
