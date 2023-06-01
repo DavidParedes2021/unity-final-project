@@ -135,7 +135,7 @@ public class EC : MonoBehaviour
         }
         private void SpawnBoat()
         {
-                Vector3 randomBoatPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,minElevation:45,maxElevation:65);
+                Vector3 randomBoatPosition = GetRandomTerrainPosition(RM.currentTerrain,MainPlayer.transform.position,minElevation:40,maxElevation:55);
                 var boatInstantiated = Instantiate(RM.boatPrefab, randomBoatPosition, Quaternion.identity);
                 var boat = Boat.requireBoatScript(boatInstantiated);
                 this.Boat = boat;
@@ -340,7 +340,7 @@ public class EC : MonoBehaviour
                 UIController.endGamePanel.SetActive(true);
                 SoundsManager.GetNewASC(gameObject).PlayOneShot(RM.SM.endGame);
                 yield return new WaitForSeconds(waitTime);
-                SceneManager.LoadScene("StartScreenScene");
+                SceneManager.LoadScene("StartScreenScene",LoadSceneMode.Single);
         }
 
         public void WinGame()
@@ -352,7 +352,7 @@ public class EC : MonoBehaviour
                 UIController.winPanel.SetActive(true);
                 SoundsManager.GetNewASC(gameObject).PlayOneShot(RM.SM.winGame);
                 yield return new WaitForSeconds(waitTime);
-                SceneManager.LoadScene("StartScreenScene");
+                SceneManager.LoadScene("StartScreenScene",LoadSceneMode.Single);
         }
 
         public void RequireTargetsForCompass(Compass compass)

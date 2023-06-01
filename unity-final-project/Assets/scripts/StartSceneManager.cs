@@ -20,11 +20,15 @@ public class StartSceneManager: MonoBehaviour
     private void Start()
     {
         controlsImage.gameObject.SetActive(false);
+        StartButton.onClick.AddListener(LoadButton);
     }
 
     private void Update()
     {
-        StartButton.onClick.AddListener(LoadButton);
+        if (Input.GetKeyUp(KeyCode.Y))
+        {
+            LoadButton();
+        }
     }
     void LoadButton()
     {
