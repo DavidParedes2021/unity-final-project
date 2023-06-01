@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
-
 public class Zombie : Player
 {
     private NavMeshAgent _agent;
@@ -41,7 +40,7 @@ public class Zombie : Player
         
         _agent = U.GetOrAddComponent<NavMeshAgent>(gameObject);
         
-        _timeSinceLastObjSeen = 6f;
+        _timeSinceLastObjSeen = 1000f;
     }
 
     private void Start()
@@ -169,7 +168,7 @@ public class Zombie : Player
                         _timeSinceLastObjSeen = 0.0f;
                     }
                 }
-                if (Vector3.Distance(_agent.transform.position, enemyObj.transform.position) <= 6f)
+                if (Vector3.Distance(transform.position, enemyObj.transform.position) <= 6f)
                 {
                     TriggerCurrentWeapon();
                 }
@@ -177,10 +176,24 @@ public class Zombie : Player
         }
     }
 
+    private IEnumerator MoveToPlayerCoroutine()
+    {
+        while (true)
+        {
+            _agent.destination = enemyObj.transform.position;
+            hasRandomDestination = false;
+            hasZombiePath = true;
+            _timeSinceLastUpdateEnemyPath = 0;
+            yield return new WaitForSeconds(5 + Random.Range(-0.9f, 0.9f));
+        }
+    }
+
     private void MoveInPath()
     {
+        
         _timeSinceLastObjSeen += Time.deltaTime;
         _timeSinceLastUpdateEnemyPath += Time.deltaTime;
+        return;
         if (isEnemyInVisibleRangeTime())
         {
             transform.LookAt(enemyObj.transform);
@@ -190,12 +203,14 @@ public class Zombie : Player
                 hasZombiePath = true;
                 _timeSinceLastUpdateEnemyPath = 0;
             }
-            if (_timeSinceLastUpdateEnemyPath>1f + Random.Range(0.25f,0.5f) && Vector3.Distance(_agent.destination, enemyObj.transform.position) > 3f) {
+            
+            if (_timeSinceLastUpdateEnemyPath>2.5f + Random.Range(0.25f,0.5f) || Vector3.Distance(_agent.destination, enemyObj.transform.position) > 3f) {
                 _agent.destination = enemyObj.transform.position;
                 hasZombiePath = true;
                 hasRandomDestination = false;
                 _timeSinceLastUpdateEnemyPath = 0;;
             }
+            
         }
         else
         {

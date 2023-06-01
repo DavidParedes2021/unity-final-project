@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
+using Image = UnityEngine.UI.Image;
 
 public class StartSceneManager: MonoBehaviour
 {
@@ -12,6 +14,14 @@ public class StartSceneManager: MonoBehaviour
     public TextMeshProUGUI progressText;
     public String sceneName;
     private bool loadingScene = false;
+    public IPanel imagePanel;
+    public Image controlsImage;
+
+    private void Start()
+    {
+        controlsImage.gameObject.SetActive(false);
+    }
+
     private void Update()
     {
         StartButton.onClick.AddListener(LoadButton);
@@ -25,6 +35,7 @@ public class StartSceneManager: MonoBehaviour
     IEnumerator LoadScene()
     {
         if (!loadingScene) {
+            controlsImage.gameObject.SetActive(true);
             loadingScene = true;
             //Begin to load the Scene you specify
             AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
